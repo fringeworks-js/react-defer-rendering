@@ -3,10 +3,8 @@
 import debounce from '@niche-works/utils/timer/debounce';
 import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
-import type {
-  DeferRenderingWithHandlersResult,
-  RenderingState,
-} from '../types';
+import { RenderingState } from '../constants';
+import type { DeferRenderingWithHandlersResult } from '../types';
 import useDeferUntilReady from '../useDeferUntilReady';
 import type { UseDeferUntilOnReadyOptions } from './types';
 
@@ -25,17 +23,17 @@ export default function useDeferUntilOnReady<
   options: UseDeferUntilOnReadyOptions<P, E> = {},
 ): DeferRenderingWithHandlersResult<T | P | E> {
   const { onReadyDelay, onFallbackDelay, onPendingDelay, ...opts } = options;
-  const [state, setState] = useState<RenderingState>('pending');
+  const [state, setState] = useState<RenderingState>(RenderingState.pending);
   const onReady = useMemo(() => {
-    const fn = () => setState('ready');
+    const fn = () => setState(RenderingState.ready);
     return onReadyDelay != null ? debounce(fn, onReadyDelay) : fn;
   }, [onReadyDelay]);
   const onFallback = useMemo(() => {
-    const fn = () => setState('fallback');
+    const fn = () => setState(RenderingState.fallback);
     return onFallbackDelay != null ? debounce(fn, onFallbackDelay) : fn;
   }, [onFallbackDelay]);
   const onPending = useMemo(() => {
-    const fn = () => setState('pending');
+    const fn = () => setState(RenderingState.pending);
     return onPendingDelay != null ? debounce(fn, onPendingDelay) : fn;
   }, [onPendingDelay]);
 

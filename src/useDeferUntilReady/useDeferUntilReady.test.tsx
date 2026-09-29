@@ -1,13 +1,11 @@
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { RenderingState } from '../types';
+import type { RenderingState } from '../constants';
 import useDeferUntilReady from './useDeferUntilReady';
 
 describe('useDeferUntilReady', () => {
   it('readyかつdeferが未指定の場合、即座にtargetが返る', () => {
-    const { result } = renderHook(() =>
-      useDeferUntilReady('target', 'ready'),
-    );
+    const { result } = renderHook(() => useDeferUntilReady('target', 'ready'));
     expect(result.current.state).toBe('ready');
     expect(result.current.node).toBe('target');
   });

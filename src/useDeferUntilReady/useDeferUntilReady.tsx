@@ -3,7 +3,8 @@
 import useIsMounted from '@niche-works/react-utils/hooks/useIsMounted';
 import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
-import type { DeferRenderingResult, RenderingState } from '../types';
+import { RenderingState } from '../constants';
+import type { DeferRenderingResult } from '../types';
 import type { UseDeferUntilReadyOptions } from './types';
 
 /**
@@ -34,10 +35,10 @@ export default function useDeferUntilReady<
   const latestStateRef = useRef<RenderingState>(null);
   const latestState = latestStateRef.current;
   let currentState = state;
-  if (preserveOnceReady && latestState === 'ready') {
+  if (preserveOnceReady && latestState === RenderingState.ready) {
     // 一度readyになったらready状態を保持する
     currentState = latestState;
-  } else if (preserveOnceFallback && latestState === 'fallback') {
+  } else if (preserveOnceFallback && latestState === RenderingState.fallback) {
     // 一度fallbackになったらfallback状態を保持する
     currentState = latestState;
   }

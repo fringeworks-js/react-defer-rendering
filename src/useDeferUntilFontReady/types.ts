@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { RenderingState } from '../types';
+import type { RenderingState } from '../constants';
 import type { UseDeferUntilReadyOptions } from '../useDeferUntilReady';
 
 export type UseDeferUntilFontReadyOptions<

@@ -38,8 +38,8 @@ return node;
 
 | フック                                                                                                                           | 未指定として扱われる第二引数          |
 | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
-| `useDeferUntilTimeout` / `useDeferUntilDate` / `useDeferUntilResolved` / `useDeferUntilAsyncComplete` / `useDeferUntilFontReady` | `null` / `undefined`                  |
-| `useDeferUntilBreakpoint` / `useDeferUntilRender`                                                                                | `null` / `undefined` / 空文字         |
+| `useDeferUntilTimeout` / `useDeferUntilDate` / `useDeferUntilResolved` / `useDeferUntilAsyncComplete` | `null` / `undefined`                  |
+| `useDeferUntilBreakpoint` / `useDeferUntilRender` / `useDeferUntilFontReady`                                                                                | `null` / `undefined` / 空文字         |
 | `useDeferUntilIntersected` / `useDeferUntilScrolled`                                                                             | 参照（ref）自体が`null` / `undefined` |
 
 `useDeferUntilIntersected` / `useDeferUntilScrolled`では、参照はあるものの`ref.current`が`null`の場合は「要素がまだマウントされていない」とみなし、`pending`のままになります。

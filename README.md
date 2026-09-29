@@ -38,8 +38,8 @@ Because hooks cannot be called conditionally, you can make deferred rendering an
 
 | Hook                                                                                                                         | Second argument treated as unspecified        |
 | ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| `useDeferUntilTimeout`, `useDeferUntilDate`, `useDeferUntilResolved`, `useDeferUntilAsyncComplete`, `useDeferUntilFontReady` | `null` / `undefined`                          |
-| `useDeferUntilBreakpoint`, `useDeferUntilRender`                                                                             | `null` / `undefined` / empty string           |
+| `useDeferUntilTimeout`, `useDeferUntilDate`, `useDeferUntilResolved`, `useDeferUntilAsyncComplete` | `null` / `undefined`                          |
+| `useDeferUntilBreakpoint`, `useDeferUntilRender`, `useDeferUntilFontReady`                                                                             | `null` / `undefined` / empty string           |
 | `useDeferUntilIntersected`, `useDeferUntilScrolled`                                                                          | The ref object itself is `null` / `undefined` |
 
 For `useDeferUntilIntersected` and `useDeferUntilScrolled`, a ref whose `current` is `null` means the element has not been mounted yet, so the state stays `pending`.

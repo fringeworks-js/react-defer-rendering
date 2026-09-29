@@ -1,6 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import { RenderingState } from '../constants';
 import type { DeferRenderingResult } from '../types';
 import useDeferUntilReady from '../useDeferUntilReady';
 import type { UseDeferUntilTrueOptions } from './types';
@@ -20,5 +21,9 @@ export default function useDeferUntilTrue<
   condition: boolean | null | undefined,
   options: UseDeferUntilTrueOptions<P> = {},
 ): DeferRenderingResult<T | P> {
-  return useDeferUntilReady(target, condition ? 'ready' : 'pending', options);
+  return useDeferUntilReady(
+    target,
+    condition ? RenderingState.ready : RenderingState.pending,
+    options,
+  );
 }

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { RenderingState } from './constants';
 
 /**
  * オプションのベース
@@ -52,11 +53,6 @@ export type DeferRenderingWithFallbackOptionsBase<
    */
   preserveOnceFallback?: boolean;
 };
-
-/**
- * 描画に関する状態
- */
-export type RenderingState = 'pending' | 'fallback' | 'ready';
 
 /**
  * 現在の状態を示す戻り値

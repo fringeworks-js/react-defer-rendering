@@ -4,7 +4,8 @@ import useIsMounted from '@niche-works/react-utils/hooks/useIsMounted';
 import FontFaceObserver from 'fontfaceobserver';
 import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
-import type { DeferRenderingResult, RenderingState } from '../types';
+import { RenderingState } from '../constants';
+import type { DeferRenderingResult } from '../types';
 import useDeferUntilStateChange from '../useDeferUntilReady';
 import type { UseDeferUntilFontReadyOptions } from './types';
 
@@ -30,12 +31,12 @@ export default function useDeferUntilFontReady<
     fontStretch,
     timeout = 4000,
     loader,
-    initialState = 'pending',
+    initialState = RenderingState.pending,
     ...opts
   } = options;
   // フォントが未指定の場合は待つ対象がないため即座に描画
   const [state, setState] = useState<RenderingState>(
-    fontFamily ? initialState : 'ready',
+    fontFamily ? initialState : RenderingState.ready,
   );
   const isMounted = useIsMounted();
   const isFirstRun = useRef(true);
@@ -43,7 +44,7 @@ export default function useDeferUntilFontReady<
   useEffect(() => {
     if (!fontFamily) {
       isFirstRun.current = false;
-      setState('ready');
+      setState(RenderingState.ready);
       return;
     }
 
@@ -61,13 +62,13 @@ export default function useDeferUntilFontReady<
         stretch: fontStretch,
       })
         .load(null, timeout)
-        .then(() => update('ready'))
-        .catch(() => update('fallback'));
+        .then(() => update(RenderingState.ready))
+        .catch(() => update(RenderingState.fallback));
     };
 
     if (!isFirstRun.current) {
       // マウント直後はinitialStateを維持したままフォントの確認だけ行う
-      setState('pending');
+      setState(RenderingState.pending);
     }
     isFirstRun.current = false;
 
@@ -78,7 +79,7 @@ export default function useDeferUntilFontReady<
             observe();
           }
         })
-        .catch(() => update('fallback'));
+        .catch(() => update(RenderingState.fallback));
     } else {
       observe();
     }

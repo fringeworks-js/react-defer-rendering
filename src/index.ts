@@ -1,9 +1,9 @@
 'use client';
 
+export type { RenderingState } from './constants';
 export type {
   DeferRenderingResult,
   DeferRenderingWithHandlersResult,
-  RenderingState,
 } from './types';
 export { default as useDeferUntilAsyncComplete } from './useDeferUntilAsyncComplete';
 export type { UseDeferUntilAsyncCompleteOptions } from './useDeferUntilAsyncComplete';

@@ -2,7 +2,7 @@
 
 import useIsMounted from '@niche-works/react-utils/hooks/useIsMounted';
 import { useEffect, useState } from 'react';
-import type { RenderingState } from './types';
+import { RenderingState } from './constants';
 
 /**
  * Promiseを生成する関数を実行し、その完了状態を返すhook
@@ -14,14 +14,14 @@ export default function usePromiseState(
   createPromise: (() => PromiseLike<unknown>) | null | undefined,
 ): RenderingState {
   const [state, setState] = useState<RenderingState>(
-    createPromise ? 'pending' : 'ready',
+    createPromise ? RenderingState.pending : RenderingState.ready,
   );
   const isMounted = useIsMounted();
 
   useEffect(() => {
     if (!createPromise) {
       // 未指定になった場合は待つ対象がないため即座に描画
-      setState('ready');
+      setState(RenderingState.ready);
       return;
     }
 
@@ -32,15 +32,15 @@ export default function usePromiseState(
         setState(nextState);
       }
     };
-    setState('pending');
+    setState(RenderingState.pending);
     try {
       Promise.resolve(createPromise()).then(
-        () => update('ready'),
-        () => update('fallback'),
+        () => update(RenderingState.ready),
+        () => update(RenderingState.fallback),
       );
     } catch {
       // 生成関数が同期的に例外を投げた場合も失敗として扱う
-      update('fallback');
+      update(RenderingState.fallback);
     }
     return () => {
       isCurrent = false;
