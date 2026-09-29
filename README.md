@@ -31,6 +31,31 @@ return node;
 - Once the condition is met (`ready`), rendering switches to the target node passed as the first argument
 - Some hooks also support a failure state (`fallback`)
 
+### When the target to wait for is not specified
+
+Hooks that take something to wait for become `ready` immediately when the second argument is `null` / `undefined`, since there is nothing to wait for. If it later becomes unspecified, the state returns to `ready`; if it changes from unspecified to a value, the hook starts waiting again from `pending`.\
+Because hooks cannot be called conditionally, you can make deferred rendering an optional feature of your component by passing `undefined` as the second argument.
+
+| Hook                                                                                                                         | Second argument treated as unspecified        |
+| ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| `useDeferUntilTimeout`, `useDeferUntilDate`, `useDeferUntilResolved`, `useDeferUntilAsyncComplete`, `useDeferUntilFontReady` | `null` / `undefined`                          |
+| `useDeferUntilBreakpoint`, `useDeferUntilRender`                                                                             | `null` / `undefined` / empty string           |
+| `useDeferUntilIntersected`, `useDeferUntilScrolled`                                                                          | The ref object itself is `null` / `undefined` |
+
+For `useDeferUntilIntersected` and `useDeferUntilScrolled`, a ref whose `current` is `null` means the element has not been mounted yet, so the state stays `pending`.
+
+```tsx
+function Heading({ fontFamily, children }: Props) {
+  // Render immediately when fontFamily is not specified
+  const { node } = useDeferUntilFontReady(<h1>{children}</h1>, fontFamily, {
+    pending: null,
+  });
+  return node;
+}
+```
+
+Note that the second argument of `useDeferUntilTrue` is the condition itself, so `null` / `undefined` is treated as unmet (`pending`).
+
 ## Basic Hooks
 
 ### `useDeferUntilReady`
@@ -103,16 +128,19 @@ const { node } = useDeferUntilResolved(<MyComponent />, fetchPromise, {
 
 ### `useDeferUntilAsyncComplete`
 
-Defers rendering until an async function finishes executing. `asyncFn` is invoked internally, which also manages the creation of the Promise itself.
+Defers rendering until an async function finishes executing. `asyncFn` is invoked after mount (inside an effect), which also manages the creation of the Promise itself. It is not invoked during SSR.\nSince `asyncFn` is re-invoked whenever its reference changes, memoize it with `useCallback` or similar.
 
 ```tsx
 import { useDeferUntilAsyncComplete } from '@niche-works/react-defer-rendering';
+import { useCallback } from 'react';
 
-const { node } = useDeferUntilAsyncComplete(
-  <MyComponent />,
+const loadData = useCallback(
   () => fetch('/api/data').then((res) => res.json()),
-  { pending: <Spinner /> },
+  [],
 );
+const { node } = useDeferUntilAsyncComplete(<MyComponent />, loadData, {
+  pending: <Spinner />,
+});
 ```
 
 ## Waiting for a Value to Change
@@ -222,9 +250,13 @@ Defers rendering until the specified font becomes available.
 ```tsx
 import { useDeferUntilFontReady } from '@niche-works/react-defer-rendering';
 
-const { node } = useDeferUntilFontReady(<Heading>Title</Heading>, 'Noto Sans JP', {
-  pending: <Heading style={{ visibility: 'hidden' }}>Title</Heading>,
-});
+const { node } = useDeferUntilFontReady(
+  <Heading>Title</Heading>,
+  'Noto Sans JP',
+  {
+    pending: <Heading style={{ visibility: 'hidden' }}>Title</Heading>,
+  },
+);
 ```
 
 ## Common Options
@@ -233,22 +265,22 @@ const { node } = useDeferUntilFontReady(<Heading>Title</Heading>, 'Noto Sans JP'
 
 These options are shared across all hooks.
 
-| Option                | Type        | Description                                             |
-| ---------------------- | ----------- | --------------------------------------------------------- |
-| `pending?`              | `ReactNode` | Node rendered while waiting for the condition             |
-| `pendingDefer?`         | `number`    | Delay (in ms) before showing `pending`                    |
-| `readyDefer?`           | `number`    | Delay (in ms) before showing the target node               |
-| `preserveOnceReady?`    | `boolean`   | Whether to keep the `ready` state once reached             |
+| Option               | Type        | Description                                    |
+| -------------------- | ----------- | ---------------------------------------------- |
+| `pending?`           | `ReactNode` | Node rendered while waiting for the condition  |
+| `pendingDefer?`      | `number`    | Delay (in ms) before showing `pending`         |
+| `readyDefer?`        | `number`    | Delay (in ms) before showing the target node   |
+| `preserveOnceReady?` | `boolean`   | Whether to keep the `ready` state once reached |
 
 ### Options for `fallback`
 
 `useDeferUntilReady`, `useDeferUntilResolved`, `useDeferUntilAsyncComplete`, `useDeferUntilOnReady`, `useDeferUntilCallThreshold`, and `useDeferUntilFontReady` also support a `fallback` state for failures.
 
-| Option                   | Type        | Description                                          |
-| ------------------------- | ----------- | -------------------------------------------------------- |
-| `fallback?`                | `ReactNode` | Node rendered on failure                                 |
-| `fallbackDefer?`           | `number`    | Delay (in ms) before showing `fallback`                  |
-| `preserveOnceFallback?`    | `boolean`   | Whether to keep the `fallback` state once reached         |
+| Option                  | Type        | Description                                       |
+| ----------------------- | ----------- | ------------------------------------------------- |
+| `fallback?`             | `ReactNode` | Node rendered on failure                          |
+| `fallbackDefer?`        | `number`    | Delay (in ms) before showing `fallback`           |
+| `preserveOnceFallback?` | `boolean`   | Whether to keep the `fallback` state once reached |
 
 ## Using with SSR / RSC
 

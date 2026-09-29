@@ -31,6 +31,31 @@ return node;
 - 条件を満たすと（`ready`）、第一引数に渡した対象ノードに切り替わります
 - 一部のフックは失敗時の状態（`fallback`）にも対応しています
 
+### 待つ対象が未指定の場合
+
+待つ対象を受け取るフックは、第二引数が`null` / `undefined`の場合、待つものがないとみなして即座に`ready`になります。途中で未指定に変わった場合も`ready`に戻り、未指定から指定に変わった場合は改めて`pending`から待ち始めます。\
+フックは条件付きで呼び出せないため、コンポーネントの機能として遅延描画を任意にしたい場合は、第二引数に`undefined`を渡すことで無効にできます。
+
+| フック                                                                                                                           | 未指定として扱われる第二引数          |
+| -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| `useDeferUntilTimeout` / `useDeferUntilDate` / `useDeferUntilResolved` / `useDeferUntilAsyncComplete` / `useDeferUntilFontReady` | `null` / `undefined`                  |
+| `useDeferUntilBreakpoint` / `useDeferUntilRender`                                                                                | `null` / `undefined` / 空文字         |
+| `useDeferUntilIntersected` / `useDeferUntilScrolled`                                                                             | 参照（ref）自体が`null` / `undefined` |
+
+`useDeferUntilIntersected` / `useDeferUntilScrolled`では、参照はあるものの`ref.current`が`null`の場合は「要素がまだマウントされていない」とみなし、`pending`のままになります。
+
+```tsx
+function Heading({ fontFamily, children }: Props) {
+  // fontFamilyが未指定なら待たずに表示する
+  const { node } = useDeferUntilFontReady(<h1>{children}</h1>, fontFamily, {
+    pending: null,
+  });
+  return node;
+}
+```
+
+なお、`useDeferUntilTrue`の第二引数は条件そのものであり、`null` / `undefined`は条件を満たしていない（`pending`）として扱われます。
+
 ## 基本のフック
 
 ### `useDeferUntilReady`
@@ -103,16 +128,19 @@ const { node } = useDeferUntilResolved(<MyComponent />, fetchPromise, {
 
 ### `useDeferUntilAsyncComplete`
 
-非同期関数の実行が完了するまで描画を遅延させます。`asyncFn`は内部で呼び出され、Promiseの生成自体を管理します。
+非同期関数の実行が完了するまで描画を遅延させます。`asyncFn`はマウント後（effect内）に呼び出され、Promiseの生成自体を管理します。SSR時は呼び出されません。\n`asyncFn`の参照が変わるたびに再実行されるため、`useCallback`等でメモ化してください。
 
 ```tsx
 import { useDeferUntilAsyncComplete } from '@niche-works/react-defer-rendering';
+import { useCallback } from 'react';
 
-const { node } = useDeferUntilAsyncComplete(
-  <MyComponent />,
+const loadData = useCallback(
   () => fetch('/api/data').then((res) => res.json()),
-  { pending: <Spinner /> },
+  [],
 );
+const { node } = useDeferUntilAsyncComplete(<MyComponent />, loadData, {
+  pending: <Spinner />,
+});
 ```
 
 ## 値の変化を待つ
@@ -222,9 +250,13 @@ const { node } = useDeferUntilRender(<Overlay />, '#third-party-widget', {
 ```tsx
 import { useDeferUntilFontReady } from '@niche-works/react-defer-rendering';
 
-const { node } = useDeferUntilFontReady(<Heading>Title</Heading>, 'Noto Sans JP', {
-  pending: <Heading style={{ visibility: 'hidden' }}>Title</Heading>,
-});
+const { node } = useDeferUntilFontReady(
+  <Heading>Title</Heading>,
+  'Noto Sans JP',
+  {
+    pending: <Heading style={{ visibility: 'hidden' }}>Title</Heading>,
+  },
+);
 ```
 
 ## 共通オプション
@@ -233,22 +265,22 @@ const { node } = useDeferUntilFontReady(<Heading>Title</Heading>, 'Noto Sans JP'
 
 すべてのフックで共通のオプションです。
 
-| オプション            | 型          | 説明                                           |
-| ---------------------- | ----------- | ---------------------------------------------- |
-| `pending?`              | `ReactNode` | 条件を待っている間に表示するノード             |
-| `pendingDefer?`         | `number`    | `pending`を表示するまでの遅延時間（ミリ秒）    |
-| `readyDefer?`           | `number`    | 対象ノードを表示するまでの遅延時間（ミリ秒）   |
-| `preserveOnceReady?`    | `boolean`   | 一度`ready`になったら、その状態を保持するか    |
+| オプション           | 型          | 説明                                         |
+| -------------------- | ----------- | -------------------------------------------- |
+| `pending?`           | `ReactNode` | 条件を待っている間に表示するノード           |
+| `pendingDefer?`      | `number`    | `pending`を表示するまでの遅延時間（ミリ秒）  |
+| `readyDefer?`        | `number`    | 対象ノードを表示するまでの遅延時間（ミリ秒） |
+| `preserveOnceReady?` | `boolean`   | 一度`ready`になったら、その状態を保持するか  |
 
 ### `fallback` に関するオプション
 
 `useDeferUntilReady` / `useDeferUntilResolved` / `useDeferUntilAsyncComplete` / `useDeferUntilOnReady` / `useDeferUntilCallThreshold` / `useDeferUntilFontReady` は、失敗時の状態として`fallback`にも対応しています。
 
-| オプション              | 型          | 説明                                          |
-| ------------------------ | ----------- | --------------------------------------------- |
-| `fallback?`               | `ReactNode` | 失敗時に表示するノード                       |
-| `fallbackDefer?`          | `number`    | `fallback`を表示するまでの遅延時間（ミリ秒） |
-| `preserveOnceFallback?`   | `boolean`   | 一度`fallback`になったら、その状態を保持するか |
+| オプション              | 型          | 説明                                           |
+| ----------------------- | ----------- | ---------------------------------------------- |
+| `fallback?`             | `ReactNode` | 失敗時に表示するノード                         |
+| `fallbackDefer?`        | `number`    | `fallback`を表示するまでの遅延時間（ミリ秒）   |
+| `preserveOnceFallback?` | `boolean`   | 一度`fallback`になったら、その状態を保持するか |
 
 ## SSR / RSCでの利用について
 

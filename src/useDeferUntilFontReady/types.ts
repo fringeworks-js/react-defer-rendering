@@ -1,4 +1,3 @@
-import type { FontVariant } from 'fontfaceobserver';
 import type { ReactNode } from 'react';
 import type { RenderingState } from '../types';
 import type { UseDeferUntilReadyOptions } from '../useDeferUntilReady';
@@ -8,9 +7,19 @@ export type UseDeferUntilFontReadyOptions<
   E extends ReactNode = ReactNode,
 > = UseDeferUntilReadyOptions<P, E> & {
   /**
-   *　フォントの詳細なスタイル
+   *　フォントの太さ
    */
-  fontVariant?: FontVariant;
+  fontWeight?: number | string | null | undefined;
+
+  /**
+   *　フォントの通常体 (normal)、筆記体 (italic)、斜体(oblique)
+   */
+  fontStyle?: string | null | undefined;
+
+  /**
+   *　フォントの通常、圧縮、引き伸ばし
+   */
+  fontStretch?: string | null | undefined;
 
   /**
    * 読み込みに失敗した場合のタイムアウト（ミリ秒）

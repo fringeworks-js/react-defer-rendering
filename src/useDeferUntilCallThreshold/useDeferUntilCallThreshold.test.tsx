@@ -79,4 +79,13 @@ describe('useDeferUntilCallThreshold', () => {
     expect(result.current.state).toBe('pending');
     expect(result.current.node).toBe('loading');
   });
+  it('optionsを省略できる', () => {
+    const { result } = renderHook(() => useDeferUntilCallThreshold('target'));
+    expect(result.current.state).toBe('pending');
+
+    act(() => {
+      result.current.onReady();
+    });
+    expect(result.current.state).toBe('ready');
+  });
 });

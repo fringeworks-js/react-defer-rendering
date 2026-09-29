@@ -11,7 +11,7 @@ import type { UseDeferUntilFontReadyOptions } from './types';
 /**
  * 指定のフォントが利用可能になるまで描画を遅延させるhook
  * @param target 描画対象のノード
- * @param fontFamily フォントファミリー
+ * @param fontFamily フォントファミリー（null/undefinedの場合は待たずに描画する）
  * @param options オプション
  * @returns state（'pending', 'ready', 'fallback'）と状態に応じたノード
  */
@@ -22,33 +22,47 @@ export default function useDeferUntilFontReady<
 >(
   target: T,
   fontFamily: string | null | undefined,
-  options: UseDeferUntilFontReadyOptions<P, E>,
+  options: UseDeferUntilFontReadyOptions<P, E> = {},
 ): DeferRenderingResult<T | P | E> {
   const {
-    fontVariant,
+    fontWeight,
+    fontStyle,
+    fontStretch,
     timeout = 4000,
     loader,
     initialState = 'pending',
     ...opts
   } = options;
-  const [state, setState] = useState<RenderingState>(initialState);
+  // フォントが未指定の場合は待つ対象がないため即座に描画
+  const [state, setState] = useState<RenderingState>(
+    fontFamily ? initialState : 'ready',
+  );
   const isMounted = useIsMounted();
   const isFirstRun = useRef(true);
 
   useEffect(() => {
+    if (!fontFamily) {
+      isFirstRun.current = false;
+      setState('ready');
+      return;
+    }
+
+    // 条件が変わった後に古い確認結果で状態を上書きしないようにする
+    let isCurrent = true;
+    const update = (nextState: RenderingState) => {
+      if (isCurrent && isMounted()) {
+        setState(nextState);
+      }
+    };
     const observe = () => {
-      new FontFaceObserver(fontFamily, fontVariant)
+      new FontFaceObserver(fontFamily, {
+        weight: fontWeight,
+        style: fontStyle,
+        stretch: fontStretch,
+      })
         .load(null, timeout)
-        .then(() => {
-          if (isMounted()) {
-            setState('ready');
-          }
-        })
-        .catch(() => {
-          if (isMounted()) {
-            setState('fallback');
-          }
-        });
+        .then(() => update('ready'))
+        .catch(() => update('fallback'));
     };
 
     if (!isFirstRun.current) {
@@ -59,16 +73,19 @@ export default function useDeferUntilFontReady<
 
     if (loader) {
       loader()
-        .then(() => observe())
-        .catch(() => {
-          if (isMounted()) {
-            setState('fallback');
+        .then(() => {
+          if (isCurrent) {
+            observe();
           }
-        });
+        })
+        .catch(() => update('fallback'));
     } else {
       observe();
     }
-  }, [fontFamily, fontVariant, timeout, loader]);
+    return () => {
+      isCurrent = false;
+    };
+  }, [fontFamily, fontWeight, fontStyle, fontStretch, timeout, loader]);
 
   return useDeferUntilStateChange(target, state, opts);
 }

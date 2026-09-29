@@ -10,7 +10,7 @@ import type { UseDeferUntilBreakpointOptions } from './types';
 /**
  * メディアクエリーが一致するまで描画を遅延させるhook
  * @param target 描画対象のノード
- * @param mediaQuery メディアクエリ（例: '(max-width: 768px)'）
+ * @param mediaQuery メディアクエリ（例: '(max-width: 768px)'）（null/undefinedの場合は待たずに描画する）
  * @param options オプション
  * @returns state（'pending', 'ready'）と状態に応じたノード
  */
@@ -19,7 +19,7 @@ export default function useDeferUntilBreakpoint<
   P extends ReactNode = ReactNode,
 >(
   target: T,
-  mediaQuery: string,
+  mediaQuery: string | null | undefined,
   options: UseDeferUntilBreakpointOptions<P> = {},
 ): DeferRenderingResult<T | P> {
   const {
@@ -31,6 +31,9 @@ export default function useDeferUntilBreakpoint<
 
   const subscribe = useCallback(
     (onStoreChange: () => void) => {
+      if (!mediaQuery) {
+        return () => {};
+      }
       const mediaQueryList = window.matchMedia(mediaQuery);
       if (preserveOnceReady && mediaQueryList.matches) {
         // 一度readyになったらready状態を保持する場合で既にreadyな場合は監視不要
@@ -54,14 +57,16 @@ export default function useDeferUntilBreakpoint<
     },
     [mediaQuery, preserveOnceReady, detectionDelay],
   );
+  // メディアクエリーが未指定の場合は待つ対象がないため即座に描画
+  // （空のメディアクエリーはすべての環境にマッチするmatchMediaの挙動とも一致する）
   const getSnapshot = useCallback(
-    () => window.matchMedia(mediaQuery).matches,
+    () => !mediaQuery || window.matchMedia(mediaQuery).matches,
     [mediaQuery],
   );
   // SSR時は実際のメディアクエリーを判定できないためinitialConditionを使う
   const getServerSnapshot = useCallback(
-    () => initialCondition,
-    [initialCondition],
+    () => !mediaQuery || initialCondition,
+    [mediaQuery, initialCondition],
   );
 
   const condition = useSyncExternalStore(

@@ -10,7 +10,7 @@ import type { UseDeferUntilIntersectedOptions } from './types';
 /**
  * 基準となる要素がビューポートに入るまで描画を遅延させるhook
  * @param target 描画対象のノード
- * @param elementRef 基準となる要素の参照
+ * @param elementRef 基準となる要素の参照（参照自体がnull/undefinedの場合は待たずに描画する）
  * @param options オプション
  * @returns state（'pending', 'ready'）と状態に応じたノード
  */
@@ -19,7 +19,7 @@ export default function useDeferUntilIntersected<
   P extends ReactNode = ReactNode,
 >(
   target: T,
-  elementRef: RefObject<HTMLElement | null | undefined>,
+  elementRef: RefObject<HTMLElement | null | undefined> | null | undefined,
   options: UseDeferUntilIntersectedOptions<P> = {},
 ): DeferRenderingResult<T | P> {
   const defaultRootRef = useRef<Element | null | undefined>(null);
@@ -32,11 +32,20 @@ export default function useDeferUntilIntersected<
   } = options;
   // IntersectionObserverは同期的に現在値を取得できないため、直近の通知結果を保持する
   const snapshotRef = useRef(initialCondition);
+  // 監視対象が変わった場合に、前の要素の交差状態を引き継がないよう監視中の要素を保持する
+  const observedElementRef = useRef<HTMLElement | null | undefined>(null);
 
   const subscribe = useCallback(
     (onStoreChange: () => void) => {
-      const element = elementRef.current;
+      const element = elementRef?.current;
       const container = rootRef.current;
+      if (observedElementRef.current !== element) {
+        observedElementRef.current = element;
+        if (snapshotRef.current !== initialCondition) {
+          snapshotRef.current = initialCondition;
+          onStoreChange();
+        }
+      }
       if (!element) {
         return () => {};
       }
@@ -62,13 +71,25 @@ export default function useDeferUntilIntersected<
         observer.disconnect(); // クリーンアップ
       };
     },
-    [elementRef.current, rootRef.current, threshold, rootMargin],
+    [
+      elementRef,
+      elementRef?.current,
+      rootRef.current,
+      threshold,
+      rootMargin,
+      initialCondition,
+    ],
   );
-  const getSnapshot = useCallback(() => snapshotRef.current, []);
+  // 参照自体が未指定の場合は待つ対象がないため即座に描画
+  // （参照はあるが要素がまだない場合は、マウント待ちとして扱う）
+  const getSnapshot = useCallback(
+    () => !elementRef || snapshotRef.current,
+    [elementRef],
+  );
   // SSR時は実際の交差状態を判定できないためinitialConditionを使う
   const getServerSnapshot = useCallback(
-    () => initialCondition,
-    [initialCondition],
+    () => !elementRef || initialCondition,
+    [elementRef, initialCondition],
   );
 
   const condition = useSyncExternalStore(

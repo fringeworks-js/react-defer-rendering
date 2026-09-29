@@ -52,4 +52,43 @@ describe('useDeferUntilAsyncComplete', () => {
       await asyncFn.mock.results[0].value;
     });
   });
+  it('asyncFnが同期的に例外を投げた場合はfallbackになる', () => {
+    const asyncFn = vi.fn((): Promise<void> => {
+      throw new Error('sync error');
+    });
+    const { result } = renderHook(() =>
+      useDeferUntilAsyncComplete('target', asyncFn, { fallback: 'error' }),
+    );
+    expect(result.current.state).toBe('fallback');
+    expect(result.current.node).toBe('error');
+  });
+
+  it('null -> asyncFn -> null と変化した場合、pendingを経てreadyに戻り、古い結果は反映されない', async () => {
+    let rejectFn!: (error: Error) => void;
+    const asyncFn = vi.fn(
+      () =>
+        new Promise<void>((_, reject) => {
+          rejectFn = reject;
+        }),
+    );
+    const { result, rerender } = renderHook(
+      ({ fn }: { fn: (() => Promise<void>) | null }) =>
+        useDeferUntilAsyncComplete('target', fn),
+      { initialProps: { fn: null as (() => Promise<void>) | null } },
+    );
+    expect(result.current.state).toBe('ready');
+
+    rerender({ fn: asyncFn });
+    expect(result.current.state).toBe('pending');
+    expect(asyncFn).toHaveBeenCalledTimes(1);
+
+    rerender({ fn: null });
+    expect(result.current.state).toBe('ready');
+
+    await act(async () => {
+      rejectFn(new Error('failed'));
+      await asyncFn.mock.results[0].value.catch(() => {});
+    });
+    expect(result.current.state).toBe('ready');
+  });
 });

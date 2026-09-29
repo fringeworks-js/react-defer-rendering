@@ -22,7 +22,7 @@ export default function useDeferUntilOnReady<
   E extends ReactNode = ReactNode,
 >(
   target: T,
-  options: UseDeferUntilOnReadyOptions<P, E>,
+  options: UseDeferUntilOnReadyOptions<P, E> = {},
 ): DeferRenderingWithHandlersResult<T | P | E> {
   const { onReadyDelay, onFallbackDelay, onPendingDelay, ...opts } = options;
   const [state, setState] = useState<RenderingState>('pending');

@@ -24,9 +24,7 @@ class MockIntersectionObserver {
   }
 
   unobserve(element: Element) {
-    this.observedElements = this.observedElements.filter(
-      (e) => e !== element,
-    );
+    this.observedElements = this.observedElements.filter((e) => e !== element);
   }
 
   disconnect() {
@@ -69,9 +67,9 @@ describe('useDeferUntilIntersected', () => {
     );
     expect(result.current.state).toBe('pending');
     expect(MockIntersectionObserver.instances.length).toBe(1);
-    expect(
-      MockIntersectionObserver.instances[0].observedElements,
-    ).toContain(elementRef.current);
+    expect(MockIntersectionObserver.instances[0].observedElements).toContain(
+      elementRef.current,
+    );
   });
 
   it('initialConditionを指定した場合、observer発火前はその値が反映される', () => {
@@ -130,9 +128,7 @@ describe('useDeferUntilIntersected', () => {
         rootMargin: '10px',
       }),
     );
-    expect(MockIntersectionObserver.instances[0].options?.threshold).toBe(
-      0.5,
-    );
+    expect(MockIntersectionObserver.instances[0].options?.threshold).toBe(0.5);
     expect(MockIntersectionObserver.instances[0].options?.rootMargin).toBe(
       '10px',
     );
@@ -148,5 +144,44 @@ describe('useDeferUntilIntersected', () => {
 
     unmount();
     expect(MockIntersectionObserver.instances[0].disconnected).toBe(true);
+  });
+  it.each([null, undefined])(
+    '参照自体が%sの場合は待たずにreadyになる',
+    (elementRef) => {
+      const { result } = renderHook(() =>
+        useDeferUntilIntersected('target', elementRef, { pending: 'loading' }),
+      );
+      expect(result.current.state).toBe('ready');
+      expect(result.current.node).toBe('target');
+      expect(MockIntersectionObserver.instances.length).toBe(0);
+    },
+  );
+  it('参照を差し替えた場合、前の要素の交差状態を引き継がない', () => {
+    const refA: RefObject<HTMLElement | null> = {
+      current: document.createElement('div'),
+    };
+    const refB: RefObject<HTMLElement | null> = {
+      current: document.createElement('div'),
+    };
+    const { result, rerender } = renderHook(
+      ({ ref }: { ref: RefObject<HTMLElement | null> | null }) =>
+        useDeferUntilIntersected('target', ref),
+      { initialProps: { ref: refA as RefObject<HTMLElement | null> | null } },
+    );
+    act(() => {
+      MockIntersectionObserver.instances[0].trigger(true);
+    });
+    expect(result.current.state).toBe('ready');
+
+    rerender({ ref: null });
+    expect(result.current.state).toBe('ready');
+
+    rerender({ ref: refB });
+    expect(result.current.state).toBe('pending');
+
+    act(() => {
+      MockIntersectionObserver.instances.at(-1)!.trigger(true);
+    });
+    expect(result.current.state).toBe('ready');
   });
 });

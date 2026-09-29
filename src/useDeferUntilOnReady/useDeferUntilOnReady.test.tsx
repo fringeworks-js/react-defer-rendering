@@ -94,4 +94,13 @@ describe('useDeferUntilOnReady', () => {
       expect(result.current.state).toBe('fallback');
     });
   });
+  it('optionsを省略できる', () => {
+    const { result } = renderHook(() => useDeferUntilOnReady('target'));
+    expect(result.current.state).toBe('pending');
+
+    act(() => {
+      result.current.onReady();
+    });
+    expect(result.current.state).toBe('ready');
+  });
 });

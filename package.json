@@ -1,6 +1,6 @@
 {
   "name": "@niche-works/react-defer-rendering",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "keywords": [
     "react",
@@ -31,16 +31,16 @@
     "tidy": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json}\" --config ./prettier.tidy.config.ts"
   },
   "dependencies": {
-    "@niche-works/react-utils": "^0.1.0",
+    "@niche-works/react-utils": "^0.2.0",
     "@niche-works/types": "^0.4.0",
-    "@niche-works/utils": "^0.5.1",
+    "@niche-works/utils": "^0.5.2",
     "@niche-works/web-utils": "^0.1.1",
     "fontfaceobserver": "^2.3.0",
     "remeda": "^2.33.6",
     "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "@niche-works/dev": "^0.5.4",
+    "@niche-works/dev": "^0.5.5",
     "@niche-works/rollup-plugin-dist-package": "^0.2.2",
     "@testing-library/react": "^16.3.2",
     "@types/fontfaceobserver": "^2.1.3",

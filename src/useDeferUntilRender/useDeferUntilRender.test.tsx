@@ -114,10 +114,24 @@ describe('useDeferUntilRender', () => {
     expect(result.current.state).toBe('ready');
   });
 
-  it('クエリが空文字の場合はpendingのままになる', () => {
-    const { result } = renderHook(() =>
-      useDeferUntilRender('target', '', { rootRef }),
+  it.each([null, undefined, ''])(
+    'クエリが%sの場合は待たずにreadyになる',
+    (query) => {
+      const { result } = renderHook(() =>
+        useDeferUntilRender('target', query, { rootRef }),
+      );
+      expect(result.current.state).toBe('ready');
+    },
+  );
+  it('クエリが未指定になった場合はreadyに戻る', () => {
+    const { result, rerender } = renderHook(
+      ({ query }: { query: string | null }) =>
+        useDeferUntilRender('target', query, { rootRef }),
+      { initialProps: { query: '.marker' as string | null } },
     );
     expect(result.current.state).toBe('pending');
+
+    rerender({ query: null });
+    expect(result.current.state).toBe('ready');
   });
 });

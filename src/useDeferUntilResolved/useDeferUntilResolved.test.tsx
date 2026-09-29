@@ -4,9 +4,7 @@ import useDeferUntilResolved from './useDeferUntilResolved';
 
 describe('useDeferUntilResolved', () => {
   it('promiseが未指定（null）の場合、最初からreadyになる', () => {
-    const { result } = renderHook(() =>
-      useDeferUntilResolved('target', null),
-    );
+    const { result } = renderHook(() => useDeferUntilResolved('target', null));
     expect(result.current.state).toBe('ready');
   });
 
@@ -67,5 +65,40 @@ describe('useDeferUntilResolved', () => {
 
     expect(consoleErrorSpy).not.toHaveBeenCalled();
     consoleErrorSpy.mockRestore();
+  });
+
+  it('null -> promise -> null と変化した場合、pendingを経てreadyに戻る', () => {
+    const { result, rerender } = renderHook(
+      ({ promise }: { promise: Promise<void> | null }) =>
+        useDeferUntilResolved('target', promise),
+      { initialProps: { promise: null as Promise<void> | null } },
+    );
+    expect(result.current.state).toBe('ready');
+
+    rerender({ promise: new Promise<void>(() => {}) });
+    expect(result.current.state).toBe('pending');
+
+    rerender({ promise: null });
+    expect(result.current.state).toBe('ready');
+  });
+
+  it('差し替え前のpromiseが後から解決しても状態に反映されない', async () => {
+    let rejectOld!: () => void;
+    const oldPromise = new Promise<void>((_, reject) => {
+      rejectOld = reject;
+    });
+    const newPromise = new Promise<void>(() => {});
+    const { result, rerender } = renderHook(
+      ({ promise }: { promise: Promise<void> }) =>
+        useDeferUntilResolved('target', promise),
+      { initialProps: { promise: oldPromise } },
+    );
+
+    rerender({ promise: newPromise });
+    await act(async () => {
+      rejectOld();
+      await oldPromise.catch(() => {});
+    });
+    expect(result.current.state).toBe('pending');
   });
 });

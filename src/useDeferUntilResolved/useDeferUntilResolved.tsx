@@ -1,16 +1,16 @@
 'use client';
 
-import useIsMounted from '@niche-works/react-utils/hooks/useIsMounted';
 import type { ReactNode } from 'react';
-import { useEffect, useState } from 'react';
-import type { DeferRenderingResult, RenderingState } from '../types';
+import { useMemo } from 'react';
+import usePromiseState from '../_usePromiseState';
+import type { DeferRenderingResult } from '../types';
 import useDeferUntilReady from '../useDeferUntilReady';
 import type { UseDeferUntilResolvedOptions } from './types';
 
 /**
  * Promiseの完了まで描画を遅延させるhook
  * @param target 描画対象のノード
- * @param promise プロミス
+ * @param promise プロミス（null/undefinedの場合は待たずに描画する）
  * @param options オプション
  * @returns state（'pending', 'ready', 'fallback'）と状態に応じたノード
  */
@@ -23,27 +23,11 @@ export default function useDeferUntilResolved<
   promise: Promise<unknown> | null | undefined,
   options: UseDeferUntilResolvedOptions<P, E> = {},
 ): DeferRenderingResult<T | P | E> {
-  const [state, setState] = useState<RenderingState>(
-    promise ? 'pending' : 'ready',
+  const createPromise = useMemo(
+    () => (promise ? () => promise : null),
+    [promise],
   );
-  const isMounted = useIsMounted();
-
-  useEffect(() => {
-    if (promise) {
-      setState('pending');
-      promise
-        .then(() => {
-          if (isMounted()) {
-            setState('ready');
-          }
-        })
-        .catch(() => {
-          if (isMounted()) {
-            setState('fallback');
-          }
-        });
-    }
-  }, [promise]);
+  const state = usePromiseState(createPromise);
 
   return useDeferUntilReady(target, state, options);
 }

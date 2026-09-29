@@ -4,9 +4,7 @@ import useDeferUntilTrue from './useDeferUntilTrue';
 
 describe('useDeferUntilTrue', () => {
   it('conditionがtrueの場合、readyとしてtargetが返る', () => {
-    const { result } = renderHook(() =>
-      useDeferUntilTrue('target', true, {}),
-    );
+    const { result } = renderHook(() => useDeferUntilTrue('target', true, {}));
     expect(result.current.state).toBe('ready');
     expect(result.current.node).toBe('target');
   });
@@ -41,5 +39,9 @@ describe('useDeferUntilTrue', () => {
     rerender({ condition: true });
     expect(result.current.state).toBe('ready');
     expect(result.current.node).toBe('target');
+  });
+  it('optionsを省略できる', () => {
+    const { result } = renderHook(() => useDeferUntilTrue('target', true));
+    expect(result.current.state).toBe('ready');
   });
 });

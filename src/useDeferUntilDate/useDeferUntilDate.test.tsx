@@ -36,4 +36,19 @@ describe('useDeferUntilDate', () => {
     expect(result.current.state).toBe('ready');
     expect(result.current.node).toBe('target');
   });
+  it('dateが変わった場合は新しい日時まで待つ', () => {
+    const { result, rerender } = renderHook(
+      ({ date }: { date: Date | null }) => useDeferUntilDate('target', date),
+      { initialProps: { date: null as Date | null } },
+    );
+    expect(result.current.state).toBe('ready');
+
+    rerender({ date: new Date('2024-01-01T00:00:00.100Z') });
+    expect(result.current.state).toBe('pending');
+
+    act(() => {
+      vi.advanceTimersByTime(100);
+    });
+    expect(result.current.state).toBe('ready');
+  });
 });

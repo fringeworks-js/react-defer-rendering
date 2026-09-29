@@ -30,4 +30,15 @@ describe('useDeferUntilBreakpoint (SSR)', () => {
     expect(html).toContain('ready-content');
     expect(html).not.toContain('pending-content');
   });
+  it('mediaQueryが未指定の場合、initialConditionに関わらずready側のノードがSSR出力に含まれる', () => {
+    function NullFixture() {
+      const { node } = useDeferUntilBreakpoint('ready-content', null, {
+        pending: 'pending-content',
+      });
+      return <>{node}</>;
+    }
+    const html = renderToString(<NullFixture />);
+    expect(html).toContain('ready-content');
+    expect(html).not.toContain('pending-content');
+  });
 });

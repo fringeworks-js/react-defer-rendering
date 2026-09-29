@@ -153,4 +153,32 @@ describe('useDeferUntilBreakpoint', () => {
     unmount();
     expect(matchMediaMock.listenerCount('(max-width: 768px)')).toBe(0);
   });
+  it.each([null, undefined, ''])(
+    'mediaQueryが%sの場合は待たずにreadyになる',
+    (mediaQuery) => {
+      createMatchMediaMock();
+      const { result } = renderHook(() =>
+        useDeferUntilBreakpoint('target', mediaQuery),
+      );
+      expect(result.current.state).toBe('ready');
+      expect(window.matchMedia).not.toHaveBeenCalled();
+    },
+  );
+
+  it('mediaQueryが未指定になった場合はreadyに戻る', () => {
+    createMatchMediaMock({ '(max-width: 768px)': false });
+    const { result, rerender } = renderHook(
+      ({ mediaQuery }: { mediaQuery: string | undefined }) =>
+        useDeferUntilBreakpoint('target', mediaQuery),
+      {
+        initialProps: {
+          mediaQuery: '(max-width: 768px)' as string | undefined,
+        },
+      },
+    );
+    expect(result.current.state).toBe('pending');
+
+    rerender({ mediaQuery: undefined });
+    expect(result.current.state).toBe('ready');
+  });
 });

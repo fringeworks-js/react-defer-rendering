@@ -18,7 +18,7 @@ export default function useDeferUntilTrue<
 >(
   target: T,
   condition: boolean | null | undefined,
-  options: UseDeferUntilTrueOptions<P>,
+  options: UseDeferUntilTrueOptions<P> = {},
 ): DeferRenderingResult<T | P> {
   return useDeferUntilReady(target, condition ? 'ready' : 'pending', options);
 }

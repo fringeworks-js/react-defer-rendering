@@ -9,7 +9,7 @@ import type { UseDeferUntilDateOptions } from './types';
 /**
  * 指定の日時まで描画を遅延させるhook
  * @param target 描画対象のノード
- * @param defer 遅延させる時間
+ * @param date 描画する日時（null/undefinedの場合は待たずに描画する）
  * @param options オプション
  * @returns state（'pending', 'ready'）と状態に応じたノード
  */

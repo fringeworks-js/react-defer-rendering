@@ -44,13 +44,47 @@ describe('useDeferUntilTimeout', () => {
 
   it('アンマウント時にタイマーがキャンセルされる', () => {
     const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
-    const { unmount } = renderHook(() =>
-      useDeferUntilTimeout('target', 100),
-    );
+    const { unmount } = renderHook(() => useDeferUntilTimeout('target', 100));
 
     unmount();
     expect(clearTimeoutSpy).toHaveBeenCalled();
 
     clearTimeoutSpy.mockRestore();
+  });
+  it('deferが変わった場合は改めて待つ', () => {
+    const { result, rerender } = renderHook(
+      ({ defer }: { defer: number }) => useDeferUntilTimeout('target', defer),
+      { initialProps: { defer: 100 } },
+    );
+    act(() => {
+      vi.advanceTimersByTime(100);
+    });
+    expect(result.current.state).toBe('ready');
+
+    rerender({ defer: 200 });
+    expect(result.current.state).toBe('pending');
+
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    expect(result.current.state).toBe('ready');
+  });
+
+  it('null -> 数値 -> null と変化した場合、pendingを経てreadyに戻る', () => {
+    const { result, rerender } = renderHook(
+      ({ defer }: { defer: number | null }) =>
+        useDeferUntilTimeout('target', defer),
+      { initialProps: { defer: null as number | null } },
+    );
+    expect(result.current.state).toBe('ready');
+
+    rerender({ defer: 100 });
+    expect(result.current.state).toBe('pending');
+
+    rerender({ defer: null });
+    expect(result.current.state).toBe('ready');
+
+    // 保留中だったタイマーは破棄されている
+    expect(vi.getTimerCount()).toBe(0);
   });
 });

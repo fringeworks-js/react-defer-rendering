@@ -18,7 +18,7 @@ export default function useDeferUntilCallThreshold<
   E extends ReactNode = ReactNode,
 >(
   target: T,
-  options: UseDeferUntilCallThresholdOptions<P, E>,
+  options: UseDeferUntilCallThresholdOptions<P, E> = {},
 ): DeferRenderingWithHandlersResult<T | P | E> {
   const {
     onPendingCount = 1,
