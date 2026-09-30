@@ -15,8 +15,6 @@ export { default as useDeferUntilChange } from './useDeferUntilChange';
 export type { UseDeferUntilChangeOptions } from './useDeferUntilChange';
 export { default as useDeferUntilDate } from './useDeferUntilDate';
 export type { UseDeferUntilDateOptions } from './useDeferUntilDate';
-export { default as useDeferUntilFontReady } from './useDeferUntilFontReady';
-export type { UseDeferUntilFontReadyOptions } from './useDeferUntilFontReady';
 export { default as useDeferUntilIntersected } from './useDeferUntilIntersected';
 export type { UseDeferUntilIntersectedOptions } from './useDeferUntilIntersected';
 export { default as useDeferUntilOnReady } from './useDeferUntilOnReady';
@@ -33,3 +31,10 @@ export { default as useDeferUntilTimeout } from './useDeferUntilTimeout';
 export type { UseDeferUntilTimeoutOptions } from './useDeferUntilTimeout';
 export { default as useDeferUntilTrue } from './useDeferUntilTrue';
 export type { UseDeferUntilTrueOptions } from './useDeferUntilTrue';
+export { default as useDeferUntilWebFontReady } from './useDeferUntilWebFontReady';
+export type {
+  UseDeferUntilWebFontReadyOptions,
+  WebFont,
+  WebFontTarget,
+  WebFontTargets,
+} from './useDeferUntilWebFontReady';

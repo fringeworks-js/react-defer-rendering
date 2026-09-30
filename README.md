@@ -39,7 +39,8 @@ Because hooks cannot be called conditionally, you can make deferred rendering an
 | Hook                                                                                                                         | Second argument treated as unspecified        |
 | ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
 | `useDeferUntilTimeout`, `useDeferUntilDate`, `useDeferUntilResolved`, `useDeferUntilAsyncComplete` | `null` / `undefined`                          |
-| `useDeferUntilBreakpoint`, `useDeferUntilRender`, `useDeferUntilFontReady`                                                                             | `null` / `undefined` / empty string           |
+| `useDeferUntilBreakpoint`, `useDeferUntilRender` | `null` / `undefined` / empty string |
+| `useDeferUntilWebFontReady` | `null` / `undefined` / empty string / empty array |
 | `useDeferUntilIntersected`, `useDeferUntilScrolled`                                                                          | The ref object itself is `null` / `undefined` |
 
 For `useDeferUntilIntersected` and `useDeferUntilScrolled`, a ref whose `current` is `null` means the element has not been mounted yet, so the state stays `pending`.
@@ -47,7 +48,7 @@ For `useDeferUntilIntersected` and `useDeferUntilScrolled`, a ref whose `current
 ```tsx
 function Heading({ fontFamily, children }: Props) {
   // Render immediately when fontFamily is not specified
-  const { node } = useDeferUntilFontReady(<h1>{children}</h1>, fontFamily, {
+  const { node } = useDeferUntilWebFontReady(<h1>{children}</h1>, fontFamily, {
     pending: null,
   });
   return node;
@@ -243,14 +244,15 @@ const { node } = useDeferUntilRender(<Overlay />, '#third-party-widget', {
 });
 ```
 
-### `useDeferUntilFontReady`
+### `useDeferUntilWebFontReady`
 
-Defers rendering until the specified font becomes available.
+Defers rendering until all specified web fonts become available. Web fonts are checked with [`@niche-works/web-font-observer`](https://www.npmjs.com/package/@niche-works/web-font-observer).\
+It targets web fonts defined with `@font-face`. System fonts cannot be detected as loaded, so specifying one results in `fallback` after the timeout.
 
 ```tsx
-import { useDeferUntilFontReady } from '@niche-works/react-defer-rendering';
+import { useDeferUntilWebFontReady } from '@niche-works/react-defer-rendering';
 
-const { node } = useDeferUntilFontReady(
+const { node } = useDeferUntilWebFontReady(
   <Heading>Title</Heading>,
   'Noto Sans JP',
   {
@@ -258,6 +260,30 @@ const { node } = useDeferUntilFontReady(
   },
 );
 ```
+
+To wait for multiple web fonts, pass an array. To specify the weight and so on, pass an object. `null` / `undefined` in the array are ignored, so you can add web fonts conditionally.\
+Arrays and objects can be written inline (waiting does not restart unless their contents change).
+
+```tsx
+const { node } = useDeferUntilWebFontReady(<Article />, [
+  { family: 'Noto Sans JP', text: 'あ' },
+  { family: 'Roboto', weight: 400 },
+  isBold ? { family: 'Roboto', weight: 700 } : null,
+]);
+```
+
+| Option          | Type                                     | Default     | Description                                                                                          |
+| --------------- | ---------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------- |
+| `timeout?`      | `number`                                 | `3000`      | Time in milliseconds before the state becomes `fallback` when a web font is not available            |
+| `loader?`       | `(signal: AbortSignal) => Promise<void>` | -           | Function that loads the web fonts. Checking starts after it completes. Called only when the fonts change |
+| `initialState?` | `'pending' \| 'ready' \| 'fallback'`     | `'pending'` | Initial state in environments where the loading state cannot be determined, such as SSR              |
+
+`weight` / `style` / `width` / `text` in the object form are the same as in `@niche-works/web-font-observer`.
+
+- If any web font does not become available, the state becomes `fallback` and the remaining waits are aborted.
+- Web fonts that are already loaded become `ready` without waiting (no flicker for cached fonts).
+- If a web font finishes loading after the state became `fallback`, the state becomes `ready`. Use `preserveOnceFallback` to keep `fallback`.
+- Place the `@font-face` definitions outside the deferred node (e.g. global CSS or a layout). If they are inside the deferred node, they are never registered and the hook waits until the timeout.
 
 ## Common Options
 
@@ -274,7 +300,7 @@ These options are shared across all hooks.
 
 ### Options for `fallback`
 
-`useDeferUntilReady`, `useDeferUntilResolved`, `useDeferUntilAsyncComplete`, `useDeferUntilOnReady`, `useDeferUntilCallThreshold`, and `useDeferUntilFontReady` also support a `fallback` state for failures.
+`useDeferUntilReady`, `useDeferUntilResolved`, `useDeferUntilAsyncComplete`, `useDeferUntilOnReady`, `useDeferUntilCallThreshold`, and `useDeferUntilWebFontReady` also support a `fallback` state for failures.
 
 | Option                  | Type        | Description                                       |
 | ----------------------- | ----------- | ------------------------------------------------- |
@@ -286,7 +312,7 @@ These options are shared across all hooks.
 
 Every hook in this library ships with a `'use client'` directive attached at build time. In React Server Components environments such as Next.js App Router, they are treated as client component boundaries without any additional configuration.
 
-`useDeferUntilBreakpoint`, `useDeferUntilIntersected`, `useDeferUntilScrolled`, and `useDeferUntilRender` depend on browser APIs (`matchMedia`, `IntersectionObserver`, `MutationObserver`, etc.), so their actual state cannot be determined on the server. These hooks accept an `initialCondition` option to specify the value used during SSR (it is treated as `false` if not specified). Similarly, `useDeferUntilFontReady` accepts an `initialState` option to specify its initial state during SSR.
+`useDeferUntilBreakpoint`, `useDeferUntilIntersected`, `useDeferUntilScrolled`, and `useDeferUntilRender` depend on browser APIs (`matchMedia`, `IntersectionObserver`, `MutationObserver`, etc.), so their actual state cannot be determined on the server. These hooks accept an `initialCondition` option to specify the value used during SSR (it is treated as `false` if not specified). Similarly, `useDeferUntilWebFontReady` accepts an `initialState` option to specify its initial state during SSR.
 
 ## License
 

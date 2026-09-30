@@ -39,7 +39,8 @@ return node;
 | フック                                                                                                                           | 未指定として扱われる第二引数          |
 | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
 | `useDeferUntilTimeout` / `useDeferUntilDate` / `useDeferUntilResolved` / `useDeferUntilAsyncComplete` | `null` / `undefined`                  |
-| `useDeferUntilBreakpoint` / `useDeferUntilRender` / `useDeferUntilFontReady`                                                                                | `null` / `undefined` / 空文字         |
+| `useDeferUntilBreakpoint` / `useDeferUntilRender` | `null` / `undefined` / 空文字 |
+| `useDeferUntilWebFontReady` | `null` / `undefined` / 空文字 / 空配列 |
 | `useDeferUntilIntersected` / `useDeferUntilScrolled`                                                                             | 参照（ref）自体が`null` / `undefined` |
 
 `useDeferUntilIntersected` / `useDeferUntilScrolled`では、参照はあるものの`ref.current`が`null`の場合は「要素がまだマウントされていない」とみなし、`pending`のままになります。
@@ -47,7 +48,7 @@ return node;
 ```tsx
 function Heading({ fontFamily, children }: Props) {
   // fontFamilyが未指定なら待たずに表示する
-  const { node } = useDeferUntilFontReady(<h1>{children}</h1>, fontFamily, {
+  const { node } = useDeferUntilWebFontReady(<h1>{children}</h1>, fontFamily, {
     pending: null,
   });
   return node;
@@ -243,14 +244,15 @@ const { node } = useDeferUntilRender(<Overlay />, '#third-party-widget', {
 });
 ```
 
-### `useDeferUntilFontReady`
+### `useDeferUntilWebFontReady`
 
-指定のフォントが利用可能になるまで描画を遅延させます。
+指定のWebフォントがすべて利用可能になるまで描画を遅延させます。Webフォントの確認には[`@niche-works/web-font-observer`](https://www.npmjs.com/package/@niche-works/web-font-observer)を使用しています。\
+対象は`@font-face`で定義されたWebフォントです。システムフォントはロードの完了を検知できないため、指定するとタイムアウト後に`fallback`になります。
 
 ```tsx
-import { useDeferUntilFontReady } from '@niche-works/react-defer-rendering';
+import { useDeferUntilWebFontReady } from '@niche-works/react-defer-rendering';
 
-const { node } = useDeferUntilFontReady(
+const { node } = useDeferUntilWebFontReady(
   <Heading>Title</Heading>,
   'Noto Sans JP',
   {
@@ -258,6 +260,30 @@ const { node } = useDeferUntilFontReady(
   },
 );
 ```
+
+複数のWebフォントを待つ場合は配列で指定します。太さなどを指定する場合はオブジェクトで指定します。配列内の`null` / `undefined`は無視されるため、条件付きでWebフォントを追加できます。\
+配列やオブジェクトはインラインで記述しても問題ありません（内容が変わらない限り待機はやり直されません）。
+
+```tsx
+const { node } = useDeferUntilWebFontReady(<Article />, [
+  { family: 'Noto Sans JP', text: 'あ' },
+  { family: 'Roboto', weight: 400 },
+  isBold ? { family: 'Roboto', weight: 700 } : null,
+]);
+```
+
+| オプション      | 型                                   | デフォルト  | 説明                                                                                           |
+| --------------- | ------------------------------------ | ----------- | ---------------------------------------------------------------------------------------------- |
+| `timeout?`      | `number`                             | `3000`      | Webフォントが利用可能にならなかった場合に`fallback`とするまでの時間（ミリ秒）                  |
+| `loader?`       | `(signal: AbortSignal) => Promise<void>` | -       | Webフォントをロードする関数。完了後に確認を開始します。待つWebフォントが変わった時のみ呼ばれます |
+| `initialState?` | `'pending' \| 'ready' \| 'fallback'` | `'pending'` | SSR時など、読み込み状態を判定できない環境での初期状態                                          |
+
+オブジェクトで指定できる`weight` / `style` / `width` / `text`は`@niche-works/web-font-observer`と同じです。
+
+- 1つでも利用可能にならなかった場合は`fallback`になり、残りの待機は中断されます。
+- 既にロード済みのWebフォントは待たずに`ready`になります（キャッシュ済みの場合にちらつきません）。
+- `fallback`になった後でWebフォントのロードが完了した場合は`ready`になります。`fallback`を維持したい場合は`preserveOnceFallback`を指定してください。
+- `@font-face`の定義は遅延対象のノードの外（グローバルなCSSやレイアウト等）に置いてください。遅延対象の中にあると定義が登録されず、タイムアウトまで待つことになります。
 
 ## 共通オプション
 
@@ -274,7 +300,7 @@ const { node } = useDeferUntilFontReady(
 
 ### `fallback` に関するオプション
 
-`useDeferUntilReady` / `useDeferUntilResolved` / `useDeferUntilAsyncComplete` / `useDeferUntilOnReady` / `useDeferUntilCallThreshold` / `useDeferUntilFontReady` は、失敗時の状態として`fallback`にも対応しています。
+`useDeferUntilReady` / `useDeferUntilResolved` / `useDeferUntilAsyncComplete` / `useDeferUntilOnReady` / `useDeferUntilCallThreshold` / `useDeferUntilWebFontReady` は、失敗時の状態として`fallback`にも対応しています。
 
 | オプション              | 型          | 説明                                           |
 | ----------------------- | ----------- | ---------------------------------------------- |
@@ -286,7 +312,7 @@ const { node } = useDeferUntilFontReady(
 
 このライブラリの各フックには、ビルド時に`'use client'`ディレクティブが付与されています。Next.jsのApp Router等のReact Server Components環境でも、追加の設定なくクライアントコンポーネントの境界として扱われます。
 
-`useDeferUntilBreakpoint` / `useDeferUntilIntersected` / `useDeferUntilScrolled` / `useDeferUntilRender` はブラウザAPI（`matchMedia`、`IntersectionObserver`、`MutationObserver`等）に依存するため、サーバー上では実際の状態を判定できません。これらのフックは`initialCondition`オプションで、SSR時に使用する初期値を指定できます（未指定の場合は`false`として扱われます）。同様に`useDeferUntilFontReady`は`initialState`オプションでSSR時の初期状態を指定できます。
+`useDeferUntilBreakpoint` / `useDeferUntilIntersected` / `useDeferUntilScrolled` / `useDeferUntilRender` はブラウザAPI（`matchMedia`、`IntersectionObserver`、`MutationObserver`等）に依存するため、サーバー上では実際の状態を判定できません。これらのフックは`initialCondition`オプションで、SSR時に使用する初期値を指定できます（未指定の場合は`false`として扱われます）。同様に`useDeferUntilWebFontReady`は`initialState`オプションでSSR時の初期状態を指定できます。
 
 ## ライセンス
 

@@ -43,30 +43,32 @@ export default function useDeferUntilReady<
     currentState = latestState;
   }
   latestStateRef.current = currentState;
-  // currentに応じたノードと遅延時間を取得
-  const nextInfo = {
-    pending: { nextNode: pending, defer: pendingDefer },
-    fallback: { nextNode: fallback, defer: fallbackDefer },
-    ready: { nextNode: target, defer: readyDefer },
+  // currentに応じた遅延時間を取得
+  const defer = {
+    pending: pendingDefer,
+    fallback: fallbackDefer,
+    ready: readyDefer,
   }[currentState];
-  const nextRef = useRef(nextInfo);
-  nextRef.current = nextInfo;
-  const [node, setNode] = useState(() =>
-    nextInfo.defer == null ? nextInfo.nextNode : null,
+  const deferRef = useRef(defer);
+  deferRef.current = defer;
+  // 表示中の状態（nullは遅延中でまだ何も表示していない状態）
+  // ノード自体ではなく状態を保持することで、表示後のノードの更新を反映する
+  const [shownState, setShownState] = useState<RenderingState | null>(() =>
+    defer == null ? currentState : null,
   );
   const isMounted = useIsMounted();
 
   useEffect(() => {
-    const { nextNode, defer } = nextRef.current;
+    const defer = deferRef.current;
     if (defer == null) {
       // 遅延なし
-      setNode(nextNode);
+      setShownState(currentState);
       return;
     } else {
       // 遅延あり
       const timeoutId = setTimeout(() => {
         if (isMounted()) {
-          setNode(nextNode);
+          setShownState(currentState);
         }
       }, defer);
       return () => {
@@ -74,6 +76,12 @@ export default function useDeferUntilReady<
       };
     }
   }, [currentState]);
+
+  // 表示中の状態に応じた最新のノードを取得
+  const node =
+    shownState == null
+      ? null
+      : { pending, fallback, ready: target }[shownState];
 
   return {
     state: currentState,

@@ -9,39 +9,33 @@ importers:
   .:
     dependencies:
       '@niche-works/react-utils':
-        specifier: ^0.1.0
-        version: 0.1.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        specifier: ^0.2.0
+        version: 0.2.3(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@niche-works/types':
         specifier: ^0.4.0
         version: 0.4.0
       '@niche-works/utils':
-        specifier: ^0.5.1
-        version: 0.5.1
+        specifier: ^0.5.2
+        version: 0.5.3
+      '@niche-works/web-font-observer':
+        specifier: ^0.1.0
+        version: 0.1.0
       '@niche-works/web-utils':
         specifier: ^0.1.1
         version: 0.1.1
-      fontfaceobserver:
-        specifier: ^2.3.0
-        version: 2.3.0
-      remeda:
-        specifier: ^2.33.6
-        version: 2.39.0
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
     devDependencies:
       '@niche-works/dev':
-        specifier: ^0.5.4
-        version: 0.5.4
+        specifier: ^0.5.5
+        version: 0.5.5
       '@niche-works/rollup-plugin-dist-package':
         specifier: ^0.2.2
         version: 0.2.2(rollup@4.62.0)
       '@testing-library/react':
         specifier: ^16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@types/fontfaceobserver':
-        specifier: ^2.1.3
-        version: 2.1.3
       '@types/node':
         specifier: ^25.5.0
         version: 25.9.3
@@ -409,14 +403,14 @@ packages:
   '@niche-works/constants@0.2.0':
     resolution: {integrity: sha512-ZMhtephS7LQRwQpLwTSR+iqd9noDfJw3huJ4S0E/nIGw6h9EZTofzha80hzMRgIBIltlHUHHF7TY3Z9IFCq6Pg==}
 
-  '@niche-works/dev@0.5.4':
-    resolution: {integrity: sha512-dJmRNLnnwUPbCujdwI+MLnxYrYuzixDL2tcMKda3/ah8nTix7KTSrDyn3RovvDy4tBt8oGUqEoK/8WIPKQ1vIg==}
+  '@niche-works/dev@0.5.5':
+    resolution: {integrity: sha512-mZEt7c07NTW/c3sNNKqr43ezIWQRAb9tXZ7eOGpa0ZDGeieg7dDyrVrXUPHHO0CNk5E+N/hyK3mh15+VFW7WHg==}
 
-  '@niche-works/react-utils@0.1.0':
-    resolution: {integrity: sha512-+fHkTmrzvgQZQ1guL7Yo0P/faXplUxF5By7Jt18hiRgrbwJrM+9WSn5vTgC1v4V0673QpBOhuzKOZbr9dqZGCw==}
+  '@niche-works/react-utils@0.2.3':
+    resolution: {integrity: sha512-LAa6FbVE9pMkQXVhIKzWvh7nE3bkgidQJiyzZVrCdHgsfAblYn5Xp/8S5htEZESuyvszTyXlryZrGqP+DGNdYw==}
     peerDependencies:
-      react: ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
     peerDependenciesMeta:
       react-dom:
         optional: true
@@ -435,8 +429,11 @@ packages:
   '@niche-works/utils@0.4.2':
     resolution: {integrity: sha512-Kt9UaZQaoqSE+DYavPfsXDWcCSFdUsgDWDrfnUvdm2lq1P+42XMesQvRNFQm2HBGD6YXTaPYhE9ObcfjxfvDUA==}
 
-  '@niche-works/utils@0.5.1':
-    resolution: {integrity: sha512-UY1oFAFwFeCqIlnlLKiTviRd8Dmoh9UX/2c68STSSpUzfl1NOBTs0INDj0n1Ei/bwsBDbDD6GEZa60WDruGXpw==}
+  '@niche-works/utils@0.5.3':
+    resolution: {integrity: sha512-F69LT7q38Po+qDKV7frFg4kjn5uMQ8AfJw96a/wA7HDD+KuHQ9omiw075dbbv6A939SOyBICMtSpKc5niUK5cQ==}
+
+  '@niche-works/web-font-observer@0.1.0':
+    resolution: {integrity: sha512-4pIp1GRgKuU513z+QHrZNbhpXh3yVeYsK2tF+WDBeKaeIQg1MfaK0T6XoBo4fHPcavExvlMx1EaG/owwF1MuPQ==}
 
   '@niche-works/web-utils@0.1.1':
     resolution: {integrity: sha512-j1pJ/Ii/1zMyZNHq2mrP20ldg18iA13UEONpRkiQUREcQPHD9m38P2YZe2Y2pXvOksnfVzCksdw45o8R0EhRVw==}
@@ -921,9 +918,6 @@ packages:
   '@types/estree@1.0.9':
     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
 
-  '@types/fontfaceobserver@2.1.3':
-    resolution: {integrity: sha512-AewfFg9iUfoUZ4EfKxhBaEuzY2TUS+Hm0vXWMPcJRY7C4wC9XtW20lPVYHTcWVZYq1uthCEa5APl7RAX7jr2Xg==}
-
   '@types/fs-extra@8.1.5':
     resolution: {integrity: sha512-0dzKcwO+S8s2kuF5Z9oUWatQJj5Uq/iqphEtE3GQJVRRYm/tD1LglU2UnXi2A8jLq5umkGouOXOR9y0n613ZwQ==}
 
@@ -1155,9 +1149,6 @@ packages:
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
     engines: {node: '>=8'}
-
-  fontfaceobserver@2.3.0:
-    resolution: {integrity: sha512-6FPvD/IVyT4ZlNe7Wcn5Fb/4ChigpucKYSvD6a+0iMoLn2inpo711eyIcKjmDtE5XNcgAkSH9uN/nfAeZzHEfg==}
 
   fs-extra@11.3.5:
     resolution: {integrity: sha512-eKpRKAovdpZtR1WopLHxlBWvAgPny3c4gX1G5Jhwmmw4XJj0ifSD5qB5TOo8hmA0wlRKDAOAhEE1yVPgs6Fgcg==}
@@ -2095,7 +2086,7 @@ snapshots:
 
   '@niche-works/constants@0.2.0': {}
 
-  '@niche-works/dev@0.5.4':
+  '@niche-works/dev@0.5.5':
     dependencies:
       fast-glob: 3.3.3
       fs-extra: 11.3.5
@@ -2103,9 +2094,8 @@ snapshots:
       sass: 1.101.0
       type-fest: 5.7.0
 
-  '@niche-works/react-utils@0.1.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@niche-works/react-utils@0.2.3(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
-      '@niche-works/types': 0.3.2
       '@niche-works/utils': 0.4.2
       react: 19.3.0
     optionalDependencies:
@@ -2134,13 +2124,15 @@ snapshots:
       klona: 2.0.6
       remeda: 2.39.0
 
-  '@niche-works/utils@0.5.1':
+  '@niche-works/utils@0.5.3':
     dependencies:
       '@niche-works/constants': 0.2.0
       '@niche-works/types': 0.4.0
       big.js: 6.2.2
       klona: 2.0.6
       remeda: 2.39.0
+
+  '@niche-works/web-font-observer@0.1.0': {}
 
   '@niche-works/web-utils@0.1.1': {}
 
@@ -2204,7 +2196,7 @@ snapshots:
       detect-libc: 2.1.2
       is-glob: 4.0.3
       node-addon-api: 7.1.1
-      picomatch: 4.0.4
+      picomatch: 4.0.7
     optionalDependencies:
       '@parcel/watcher-android-arm64': 2.5.6
       '@parcel/watcher-darwin-arm64': 2.5.6
@@ -2443,8 +2435,6 @@ snapshots:
   '@types/deep-eql@4.0.2': {}
 
   '@types/estree@1.0.9': {}
-
-  '@types/fontfaceobserver@2.1.3': {}
 
   '@types/fs-extra@8.1.5':
     dependencies:
@@ -2687,8 +2677,6 @@ snapshots:
   fill-range@7.1.1:
     dependencies:
       to-regex-range: 5.0.1
-
-  fontfaceobserver@2.3.0: {}
 
   fs-extra@11.3.5:
     dependencies:
