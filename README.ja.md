@@ -1,6 +1,6 @@
-# @niche-works/react-defer-rendering
+# @fringeworks/react-defer-rendering
 
-`@niche-works/react-defer-rendering` は、指定した条件が満たされるまでコンポーネントの描画を遅延させることに特化したニッチなライブラリです。\
+`@fringeworks/react-defer-rendering` は、指定した条件が満たされるまでコンポーネントの描画を遅延させることに特化したニッチなライブラリです。\
 タイマー、Promise、ブラウザAPI（`matchMedia`、`IntersectionObserver`等）など、様々な条件に対応したフック群を提供します。
 
 **[English README is available here](./README.md)**
@@ -8,9 +8,9 @@
 ## インストール
 
 ```bash
-npm install @niche-works/react-defer-rendering
+npm install @fringeworks/react-defer-rendering
 # または
-pnpm add @niche-works/react-defer-rendering
+pnpm add @fringeworks/react-defer-rendering
 ```
 
 ## 使い方
@@ -18,7 +18,7 @@ pnpm add @niche-works/react-defer-rendering
 各フックは、対象ノードの描画状態を表す `state`（`'pending' | 'fallback' | 'ready'`）と、状態に応じて描画すべき `node` を返します。
 
 ```tsx
-import { useDeferUntilTrue } from '@niche-works/react-defer-rendering';
+import { useDeferUntilTrue } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilTrue(<MyComponent />, isReady, {
   pending: <Spinner />,
@@ -36,12 +36,12 @@ return node;
 待つ対象を受け取るフックは、第二引数が`null` / `undefined`の場合、待つものがないとみなして即座に`ready`になります。途中で未指定に変わった場合も`ready`に戻り、未指定から指定に変わった場合は改めて`pending`から待ち始めます。\
 フックは条件付きで呼び出せないため、コンポーネントの機能として遅延描画を任意にしたい場合は、第二引数に`undefined`を渡すことで無効にできます。
 
-| フック                                                                                                                           | 未指定として扱われる第二引数          |
-| -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
-| `useDeferUntilTimeout` / `useDeferUntilDate` / `useDeferUntilResolved` / `useDeferUntilAsyncComplete` | `null` / `undefined`                  |
-| `useDeferUntilBreakpoint` / `useDeferUntilRender` | `null` / `undefined` / 空文字 |
-| `useDeferUntilWebFontReady` | `null` / `undefined` / 空文字 / 空配列 |
-| `useDeferUntilIntersected` / `useDeferUntilScrolled`                                                                             | 参照（ref）自体が`null` / `undefined` |
+| フック                                                                                                | 未指定として扱われる第二引数           |
+| ----------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| `useDeferUntilTimeout` / `useDeferUntilDate` / `useDeferUntilResolved` / `useDeferUntilAsyncComplete` | `null` / `undefined`                   |
+| `useDeferUntilBreakpoint` / `useDeferUntilRender`                                                     | `null` / `undefined` / 空文字          |
+| `useDeferUntilWebFontReady`                                                                           | `null` / `undefined` / 空文字 / 空配列 |
+| `useDeferUntilIntersected` / `useDeferUntilScrolled`                                                  | 参照（ref）自体が`null` / `undefined`  |
 
 `useDeferUntilIntersected` / `useDeferUntilScrolled`では、参照はあるものの`ref.current`が`null`の場合は「要素がまだマウントされていない」とみなし、`pending`のままになります。
 
@@ -64,7 +64,7 @@ function Heading({ fontFamily, children }: Props) {
 `state`（`'pending' | 'fallback' | 'ready'`）を直接指定して描画を制御する、最も基本的なフックです。他のフックはすべてこのフックをベースに実装されています。
 
 ```tsx
-import { useDeferUntilReady } from '@niche-works/react-defer-rendering';
+import { useDeferUntilReady } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilReady(<MyComponent />, state, {
   pending: <Spinner />,
@@ -77,7 +77,7 @@ const { node } = useDeferUntilReady(<MyComponent />, state, {
 真偽値の条件が`true`になるまで描画を遅延させます。
 
 ```tsx
-import { useDeferUntilTrue } from '@niche-works/react-defer-rendering';
+import { useDeferUntilTrue } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilTrue(<MyComponent />, isReady, {
   pending: <Spinner />,
@@ -91,7 +91,7 @@ const { node } = useDeferUntilTrue(<MyComponent />, isReady, {
 指定の時間（ミリ秒）が経過するまで描画を遅延させます。
 
 ```tsx
-import { useDeferUntilTimeout } from '@niche-works/react-defer-rendering';
+import { useDeferUntilTimeout } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilTimeout(<MyComponent />, 3000, {
   pending: <Spinner />,
@@ -103,7 +103,7 @@ const { node } = useDeferUntilTimeout(<MyComponent />, 3000, {
 指定の日時になるまで描画を遅延させます。
 
 ```tsx
-import { useDeferUntilDate } from '@niche-works/react-defer-rendering';
+import { useDeferUntilDate } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilDate(
   <Campaign />,
@@ -119,7 +119,7 @@ const { node } = useDeferUntilDate(
 Promiseが解決（resolve/reject）するまで描画を遅延させます。
 
 ```tsx
-import { useDeferUntilResolved } from '@niche-works/react-defer-rendering';
+import { useDeferUntilResolved } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilResolved(<MyComponent />, fetchPromise, {
   pending: <Spinner />,
@@ -132,7 +132,7 @@ const { node } = useDeferUntilResolved(<MyComponent />, fetchPromise, {
 非同期関数の実行が完了するまで描画を遅延させます。`asyncFn`はマウント後（effect内）に呼び出され、Promiseの生成自体を管理します。SSR時は呼び出されません。\n`asyncFn`の参照が変わるたびに再実行されるため、`useCallback`等でメモ化してください。
 
 ```tsx
-import { useDeferUntilAsyncComplete } from '@niche-works/react-defer-rendering';
+import { useDeferUntilAsyncComplete } from '@fringeworks/react-defer-rendering';
 import { useCallback } from 'react';
 
 const loadData = useCallback(
@@ -151,7 +151,7 @@ const { node } = useDeferUntilAsyncComplete(<MyComponent />, loadData, {
 指定した値が変化するまで描画を遅延させます。値が変化するたびに一時的に`pending`を経由します。
 
 ```tsx
-import { useDeferUntilChange } from '@niche-works/react-defer-rendering';
+import { useDeferUntilChange } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilChange(<Toast>{message}</Toast>, message, {
   pending: null,
@@ -165,7 +165,7 @@ const { node } = useDeferUntilChange(<Toast>{message}</Toast>, message, {
 戻り値の`onReady` / `onFallback` / `onPending`を呼び出すことで、任意のタイミングで状態を制御できます。イベントハンドラー等、フック側では検知できない条件に対応する場合に使用します。
 
 ```tsx
-import { useDeferUntilOnReady } from '@niche-works/react-defer-rendering';
+import { useDeferUntilOnReady } from '@fringeworks/react-defer-rendering';
 
 const { node, onReady } = useDeferUntilOnReady(<Video />, {
   pending: <Spinner />,
@@ -179,7 +179,7 @@ const { node, onReady } = useDeferUntilOnReady(<Video />, {
 `useDeferUntilOnReady`と同様ですが、各ハンドラーが指定回数呼ばれて初めて状態が切り替わります。
 
 ```tsx
-import { useDeferUntilCallThreshold } from '@niche-works/react-defer-rendering';
+import { useDeferUntilCallThreshold } from '@fringeworks/react-defer-rendering';
 
 const { node, onReady } = useDeferUntilCallThreshold(<Gallery />, {
   pending: <Spinner />,
@@ -196,7 +196,7 @@ const { node, onReady } = useDeferUntilCallThreshold(<Gallery />, {
 メディアクエリーが一致するまで描画を遅延させます。
 
 ```tsx
-import { useDeferUntilBreakpoint } from '@niche-works/react-defer-rendering';
+import { useDeferUntilBreakpoint } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilBreakpoint(
   <DesktopNav />,
@@ -211,7 +211,7 @@ const { node } = useDeferUntilBreakpoint(
 
 ```tsx
 import { useRef } from 'react';
-import { useDeferUntilIntersected } from '@niche-works/react-defer-rendering';
+import { useDeferUntilIntersected } from '@fringeworks/react-defer-rendering';
 
 const elementRef = useRef<HTMLDivElement>(null);
 const { node } = useDeferUntilIntersected(<HeavyChart />, elementRef, {
@@ -237,7 +237,7 @@ const { node } = useDeferUntilScrolled(<LazyImage />, elementRef, {
 セレクターに一致する要素がDOMに描画されるまで描画を遅延させます。自身の管理外にある要素（サードパーティスクリプトが挿入する要素等）の出現を待つ場合に使用します。
 
 ```tsx
-import { useDeferUntilRender } from '@niche-works/react-defer-rendering';
+import { useDeferUntilRender } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilRender(<Overlay />, '#third-party-widget', {
   pending: null,
@@ -246,11 +246,11 @@ const { node } = useDeferUntilRender(<Overlay />, '#third-party-widget', {
 
 ### `useDeferUntilWebFontReady`
 
-指定のWebフォントがすべて利用可能になるまで描画を遅延させます。Webフォントの確認には[`@niche-works/web-font-observer`](https://www.npmjs.com/package/@niche-works/web-font-observer)を使用しています。\
+指定のWebフォントがすべて利用可能になるまで描画を遅延させます。Webフォントの確認には[`@fringeworks/web-font-observer`](https://www.npmjs.com/package/@fringeworks/web-font-observer)を使用しています。\
 対象は`@font-face`で定義されたWebフォントです。システムフォントはロードの完了を検知できないため、指定するとタイムアウト後に`fallback`になります。
 
 ```tsx
-import { useDeferUntilWebFontReady } from '@niche-works/react-defer-rendering';
+import { useDeferUntilWebFontReady } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilWebFontReady(
   <Heading>Title</Heading>,
@@ -272,13 +272,13 @@ const { node } = useDeferUntilWebFontReady(<Article />, [
 ]);
 ```
 
-| オプション      | 型                                   | デフォルト  | 説明                                                                                           |
-| --------------- | ------------------------------------ | ----------- | ---------------------------------------------------------------------------------------------- |
-| `timeout?`      | `number`                             | `3000`      | Webフォントが利用可能にならなかった場合に`fallback`とするまでの時間（ミリ秒）                  |
-| `loader?`       | `(signal: AbortSignal) => Promise<void>` | -       | Webフォントをロードする関数。完了後に確認を開始します。待つWebフォントが変わった時のみ呼ばれます |
-| `initialState?` | `'pending' \| 'ready' \| 'fallback'` | `'pending'` | SSR時など、読み込み状態を判定できない環境での初期状態                                          |
+| オプション      | 型                                       | デフォルト  | 説明                                                                                             |
+| --------------- | ---------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------ |
+| `timeout?`      | `number`                                 | `3000`      | Webフォントが利用可能にならなかった場合に`fallback`とするまでの時間（ミリ秒）                    |
+| `loader?`       | `(signal: AbortSignal) => Promise<void>` | -           | Webフォントをロードする関数。完了後に確認を開始します。待つWebフォントが変わった時のみ呼ばれます |
+| `initialState?` | `'pending' \| 'ready' \| 'fallback'`     | `'pending'` | SSR時など、読み込み状態を判定できない環境での初期状態                                            |
 
-オブジェクトで指定できる`weight` / `style` / `width` / `text`は`@niche-works/web-font-observer`と同じです。
+オブジェクトで指定できる`weight` / `style` / `width` / `text`は`@fringeworks/web-font-observer`と同じです。
 
 - 1つでも利用可能にならなかった場合は`fallback`になり、残りの待機は中断されます。
 - 既にロード済みのWebフォントは待たずに`ready`になります（キャッシュ済みの場合にちらつきません）。

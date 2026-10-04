@@ -1,7 +1,7 @@
 'use client';
 
-import isWebFontLoaded from '@niche-works/web-font-observer/isWebFontLoaded';
-import waitForWebFont from '@niche-works/web-font-observer/waitForWebFont';
+import isWebFontLoaded from '@fringeworks/web-font-observer/isWebFontLoaded';
+import waitForWebFont from '@fringeworks/web-font-observer/waitForWebFont';
 import type { ReactNode } from 'react';
 import {
   useCallback,

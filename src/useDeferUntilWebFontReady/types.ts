@@ -1,4 +1,4 @@
-import type { WebFontMatchOptions } from '@niche-works/web-font-observer';
+import type { WebFontMatchOptions } from '@fringeworks/web-font-observer';
 import type { ReactNode } from 'react';
 import type { RenderingState } from '../constants';
 import type { UseDeferUntilReadyOptions } from '../useDeferUntilReady';

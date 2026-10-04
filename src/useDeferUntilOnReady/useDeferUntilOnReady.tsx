@@ -1,6 +1,6 @@
 'use client';
 
-import debounce from '@niche-works/utils/timer/debounce';
+import debounce from '@fringeworks/utils/timer/debounce';
 import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
 import { RenderingState } from '../constants';

@@ -8,10 +8,10 @@ const { waitForWebFontMock, isWebFontLoadedMock } = vi.hoisted(() => ({
   isWebFontLoadedMock: vi.fn(),
 }));
 
-vi.mock('@niche-works/web-font-observer/waitForWebFont', () => ({
+vi.mock('@fringeworks/web-font-observer/waitForWebFont', () => ({
   default: waitForWebFontMock,
 }));
-vi.mock('@niche-works/web-font-observer/isWebFontLoaded', () => ({
+vi.mock('@fringeworks/web-font-observer/isWebFontLoaded', () => ({
   default: isWebFontLoadedMock,
 }));
 

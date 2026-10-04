@@ -1,6 +1,6 @@
-# @niche-works/react-defer-rendering
+# @fringeworks/react-defer-rendering
 
-`@niche-works/react-defer-rendering` is a niche library specialized in deferring the rendering of components until a specified condition is met.\
+`@fringeworks/react-defer-rendering` is a niche library specialized in deferring the rendering of components until a specified condition is met.\
 It provides a set of hooks covering a wide range of conditions, including timers, Promises, and browser APIs (`matchMedia`, `IntersectionObserver`, etc.).
 
 **[日本語のREADMEはこちら](./README.ja.md)**
@@ -8,9 +8,9 @@ It provides a set of hooks covering a wide range of conditions, including timers
 ## Installation
 
 ```bash
-npm install @niche-works/react-defer-rendering
+npm install @fringeworks/react-defer-rendering
 # or
-pnpm add @niche-works/react-defer-rendering
+pnpm add @fringeworks/react-defer-rendering
 ```
 
 ## Usage
@@ -18,7 +18,7 @@ pnpm add @niche-works/react-defer-rendering
 Each hook returns a `state` (`'pending' | 'fallback' | 'ready'`) representing the rendering status of the target node, along with the `node` that should be rendered for that state.
 
 ```tsx
-import { useDeferUntilTrue } from '@niche-works/react-defer-rendering';
+import { useDeferUntilTrue } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilTrue(<MyComponent />, isReady, {
   pending: <Spinner />,
@@ -36,12 +36,12 @@ return node;
 Hooks that take something to wait for become `ready` immediately when the second argument is `null` / `undefined`, since there is nothing to wait for. If it later becomes unspecified, the state returns to `ready`; if it changes from unspecified to a value, the hook starts waiting again from `pending`.\
 Because hooks cannot be called conditionally, you can make deferred rendering an optional feature of your component by passing `undefined` as the second argument.
 
-| Hook                                                                                                                         | Second argument treated as unspecified        |
-| ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| `useDeferUntilTimeout`, `useDeferUntilDate`, `useDeferUntilResolved`, `useDeferUntilAsyncComplete` | `null` / `undefined`                          |
-| `useDeferUntilBreakpoint`, `useDeferUntilRender` | `null` / `undefined` / empty string |
-| `useDeferUntilWebFontReady` | `null` / `undefined` / empty string / empty array |
-| `useDeferUntilIntersected`, `useDeferUntilScrolled`                                                                          | The ref object itself is `null` / `undefined` |
+| Hook                                                                                               | Second argument treated as unspecified            |
+| -------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| `useDeferUntilTimeout`, `useDeferUntilDate`, `useDeferUntilResolved`, `useDeferUntilAsyncComplete` | `null` / `undefined`                              |
+| `useDeferUntilBreakpoint`, `useDeferUntilRender`                                                   | `null` / `undefined` / empty string               |
+| `useDeferUntilWebFontReady`                                                                        | `null` / `undefined` / empty string / empty array |
+| `useDeferUntilIntersected`, `useDeferUntilScrolled`                                                | The ref object itself is `null` / `undefined`     |
 
 For `useDeferUntilIntersected` and `useDeferUntilScrolled`, a ref whose `current` is `null` means the element has not been mounted yet, so the state stays `pending`.
 
@@ -64,7 +64,7 @@ Note that the second argument of `useDeferUntilTrue` is the condition itself, so
 The most fundamental hook, controlling rendering by directly specifying a `state` (`'pending' | 'fallback' | 'ready'`). All other hooks are built on top of this one.
 
 ```tsx
-import { useDeferUntilReady } from '@niche-works/react-defer-rendering';
+import { useDeferUntilReady } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilReady(<MyComponent />, state, {
   pending: <Spinner />,
@@ -77,7 +77,7 @@ const { node } = useDeferUntilReady(<MyComponent />, state, {
 Defers rendering until a boolean condition becomes `true`.
 
 ```tsx
-import { useDeferUntilTrue } from '@niche-works/react-defer-rendering';
+import { useDeferUntilTrue } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilTrue(<MyComponent />, isReady, {
   pending: <Spinner />,
@@ -91,7 +91,7 @@ const { node } = useDeferUntilTrue(<MyComponent />, isReady, {
 Defers rendering until the specified duration (in milliseconds) has elapsed.
 
 ```tsx
-import { useDeferUntilTimeout } from '@niche-works/react-defer-rendering';
+import { useDeferUntilTimeout } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilTimeout(<MyComponent />, 3000, {
   pending: <Spinner />,
@@ -103,7 +103,7 @@ const { node } = useDeferUntilTimeout(<MyComponent />, 3000, {
 Defers rendering until the specified date and time.
 
 ```tsx
-import { useDeferUntilDate } from '@niche-works/react-defer-rendering';
+import { useDeferUntilDate } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilDate(
   <Campaign />,
@@ -119,7 +119,7 @@ const { node } = useDeferUntilDate(
 Defers rendering until a Promise settles (resolves or rejects).
 
 ```tsx
-import { useDeferUntilResolved } from '@niche-works/react-defer-rendering';
+import { useDeferUntilResolved } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilResolved(<MyComponent />, fetchPromise, {
   pending: <Spinner />,
@@ -132,7 +132,7 @@ const { node } = useDeferUntilResolved(<MyComponent />, fetchPromise, {
 Defers rendering until an async function finishes executing. `asyncFn` is invoked after mount (inside an effect), which also manages the creation of the Promise itself. It is not invoked during SSR.\nSince `asyncFn` is re-invoked whenever its reference changes, memoize it with `useCallback` or similar.
 
 ```tsx
-import { useDeferUntilAsyncComplete } from '@niche-works/react-defer-rendering';
+import { useDeferUntilAsyncComplete } from '@fringeworks/react-defer-rendering';
 import { useCallback } from 'react';
 
 const loadData = useCallback(
@@ -151,7 +151,7 @@ const { node } = useDeferUntilAsyncComplete(<MyComponent />, loadData, {
 Defers rendering until the specified value changes. Each time the value changes, it briefly passes through the `pending` state.
 
 ```tsx
-import { useDeferUntilChange } from '@niche-works/react-defer-rendering';
+import { useDeferUntilChange } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilChange(<Toast>{message}</Toast>, message, {
   pending: null,
@@ -165,7 +165,7 @@ const { node } = useDeferUntilChange(<Toast>{message}</Toast>, message, {
 Lets you control the state at any timing by calling the returned `onReady` / `onFallback` / `onPending` handlers. Useful for conditions the hook itself cannot detect, such as event handlers.
 
 ```tsx
-import { useDeferUntilOnReady } from '@niche-works/react-defer-rendering';
+import { useDeferUntilOnReady } from '@fringeworks/react-defer-rendering';
 
 const { node, onReady } = useDeferUntilOnReady(<Video />, {
   pending: <Spinner />,
@@ -179,7 +179,7 @@ const { node, onReady } = useDeferUntilOnReady(<Video />, {
 Similar to `useDeferUntilOnReady`, but the state only switches once each handler has been called the specified number of times.
 
 ```tsx
-import { useDeferUntilCallThreshold } from '@niche-works/react-defer-rendering';
+import { useDeferUntilCallThreshold } from '@fringeworks/react-defer-rendering';
 
 const { node, onReady } = useDeferUntilCallThreshold(<Gallery />, {
   pending: <Spinner />,
@@ -196,7 +196,7 @@ const { node, onReady } = useDeferUntilCallThreshold(<Gallery />, {
 Defers rendering until a media query matches.
 
 ```tsx
-import { useDeferUntilBreakpoint } from '@niche-works/react-defer-rendering';
+import { useDeferUntilBreakpoint } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilBreakpoint(
   <DesktopNav />,
@@ -211,7 +211,7 @@ Defers rendering until a reference element enters the viewport.
 
 ```tsx
 import { useRef } from 'react';
-import { useDeferUntilIntersected } from '@niche-works/react-defer-rendering';
+import { useDeferUntilIntersected } from '@fringeworks/react-defer-rendering';
 
 const elementRef = useRef<HTMLDivElement>(null);
 const { node } = useDeferUntilIntersected(<HeavyChart />, elementRef, {
@@ -237,7 +237,7 @@ const { node } = useDeferUntilScrolled(<LazyImage />, elementRef, {
 Defers rendering until an element matching the selector is rendered into the DOM. Useful for waiting on elements outside of your own control, such as ones inserted by third-party scripts.
 
 ```tsx
-import { useDeferUntilRender } from '@niche-works/react-defer-rendering';
+import { useDeferUntilRender } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilRender(<Overlay />, '#third-party-widget', {
   pending: null,
@@ -246,11 +246,11 @@ const { node } = useDeferUntilRender(<Overlay />, '#third-party-widget', {
 
 ### `useDeferUntilWebFontReady`
 
-Defers rendering until all specified web fonts become available. Web fonts are checked with [`@niche-works/web-font-observer`](https://www.npmjs.com/package/@niche-works/web-font-observer).\
+Defers rendering until all specified web fonts become available. Web fonts are checked with [`@fringeworks/web-font-observer`](https://www.npmjs.com/package/@fringeworks/web-font-observer).\
 It targets web fonts defined with `@font-face`. System fonts cannot be detected as loaded, so specifying one results in `fallback` after the timeout.
 
 ```tsx
-import { useDeferUntilWebFontReady } from '@niche-works/react-defer-rendering';
+import { useDeferUntilWebFontReady } from '@fringeworks/react-defer-rendering';
 
 const { node } = useDeferUntilWebFontReady(
   <Heading>Title</Heading>,
@@ -272,13 +272,13 @@ const { node } = useDeferUntilWebFontReady(<Article />, [
 ]);
 ```
 
-| Option          | Type                                     | Default     | Description                                                                                          |
-| --------------- | ---------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------- |
-| `timeout?`      | `number`                                 | `3000`      | Time in milliseconds before the state becomes `fallback` when a web font is not available            |
+| Option          | Type                                     | Default     | Description                                                                                              |
+| --------------- | ---------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------- |
+| `timeout?`      | `number`                                 | `3000`      | Time in milliseconds before the state becomes `fallback` when a web font is not available                |
 | `loader?`       | `(signal: AbortSignal) => Promise<void>` | -           | Function that loads the web fonts. Checking starts after it completes. Called only when the fonts change |
-| `initialState?` | `'pending' \| 'ready' \| 'fallback'`     | `'pending'` | Initial state in environments where the loading state cannot be determined, such as SSR              |
+| `initialState?` | `'pending' \| 'ready' \| 'fallback'`     | `'pending'` | Initial state in environments where the loading state cannot be determined, such as SSR                  |
 
-`weight` / `style` / `width` / `text` in the object form are the same as in `@niche-works/web-font-observer`.
+`weight` / `style` / `width` / `text` in the object form are the same as in `@fringeworks/web-font-observer`.
 
 - If any web font does not become available, the state becomes `fallback` and the remaining waits are aborted.
 - Web fonts that are already loaded become `ready` without waiting (no flicker for cached fonts).

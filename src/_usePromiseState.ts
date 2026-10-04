@@ -1,6 +1,6 @@
 'use client';
 
-import useIsMounted from '@niche-works/react-utils/hooks/useIsMounted';
+import useIsMounted from '@fringeworks/react-utils/hooks/useIsMounted';
 import { useEffect, useState } from 'react';
 import { RenderingState } from './constants';
 

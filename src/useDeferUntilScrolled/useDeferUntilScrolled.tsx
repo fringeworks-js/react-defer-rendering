@@ -1,7 +1,7 @@
 'use client';
 
-import useIsMounted from '@niche-works/react-utils/hooks/useIsMounted';
-import debounce from '@niche-works/utils/timer/debounce';
+import useIsMounted from '@fringeworks/react-utils/hooks/useIsMounted';
+import debounce from '@fringeworks/utils/timer/debounce';
 import type { ReactNode, RefObject } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import type { DeferRenderingResult } from '../types';

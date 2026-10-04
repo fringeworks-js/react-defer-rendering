@@ -1,6 +1,6 @@
 'use client';
 
-import unit from '@niche-works/web-utils/unit';
+import unit from '@fringeworks/utils/string/unit';
 import type { ReactNode, RefObject } from 'react';
 import { useCallback, useRef, useSyncExternalStore } from 'react';
 import type { DeferRenderingResult } from '../types';
