@@ -53,7 +53,7 @@ export default function useDeferUntilIntersected<
       const observer = new IntersectionObserver(
         (entries) => {
           const entry = entries[0];
-          if (snapshotRef.current !== entry.isIntersecting) {
+          if (entry && snapshotRef.current !== entry.isIntersecting) {
             snapshotRef.current = entry.isIntersecting;
             onStoreChange();
           }

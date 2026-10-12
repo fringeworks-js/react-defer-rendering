@@ -4,16 +4,15 @@ import useDeferUntilChange from './useDeferUntilChange';
 
 describe('useDeferUntilChange', () => {
   it('マウント後、変化がなければreadyに収束する', () => {
-    const { result } = renderHook(() =>
-      useDeferUntilChange('target', 'a', {}),
-    );
+    const { result } = renderHook(() => useDeferUntilChange('target', 'a', {}));
     expect(result.current.state).toBe('ready');
     expect(result.current.node).toBe('target');
   });
 
   it('同じ値で再レンダーしてもready状態を維持する', () => {
     const { result, rerender } = renderHook(
-      ({ value }: { value: string }) => useDeferUntilChange('target', value, {}),
+      ({ value }: { value: string }) =>
+        useDeferUntilChange('target', value, {}),
       { initialProps: { value: 'a' } },
     );
     expect(result.current.state).toBe('ready');
@@ -24,7 +23,8 @@ describe('useDeferUntilChange', () => {
 
   it('値が変化した場合も、最終的にはreadyへ収束する', () => {
     const { result, rerender } = renderHook(
-      ({ value }: { value: string }) => useDeferUntilChange('target', value, {}),
+      ({ value }: { value: string }) =>
+        useDeferUntilChange('target', value, {}),
       { initialProps: { value: 'a' } },
     );
     expect(result.current.state).toBe('ready');

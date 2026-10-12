@@ -67,7 +67,7 @@ describe('useDeferUntilIntersected', () => {
     );
     expect(result.current.state).toBe('pending');
     expect(MockIntersectionObserver.instances.length).toBe(1);
-    expect(MockIntersectionObserver.instances[0].observedElements).toContain(
+    expect(MockIntersectionObserver.instances[0]!.observedElements).toContain(
       elementRef.current,
     );
   });
@@ -93,7 +93,7 @@ describe('useDeferUntilIntersected', () => {
     );
 
     act(() => {
-      MockIntersectionObserver.instances[0].trigger(true);
+      MockIntersectionObserver.instances[0]!.trigger(true);
     });
     expect(result.current.state).toBe('ready');
     expect(result.current.node).toBe('target');
@@ -108,12 +108,12 @@ describe('useDeferUntilIntersected', () => {
     );
 
     act(() => {
-      MockIntersectionObserver.instances[0].trigger(true);
+      MockIntersectionObserver.instances[0]!.trigger(true);
     });
     expect(result.current.state).toBe('ready');
 
     act(() => {
-      MockIntersectionObserver.instances[0].trigger(false);
+      MockIntersectionObserver.instances[0]!.trigger(false);
     });
     expect(result.current.state).toBe('pending');
   });
@@ -128,8 +128,8 @@ describe('useDeferUntilIntersected', () => {
         rootMargin: '10px',
       }),
     );
-    expect(MockIntersectionObserver.instances[0].options?.threshold).toBe(0.5);
-    expect(MockIntersectionObserver.instances[0].options?.rootMargin).toBe(
+    expect(MockIntersectionObserver.instances[0]!.options?.threshold).toBe(0.5);
+    expect(MockIntersectionObserver.instances[0]!.options?.rootMargin).toBe(
       '10px',
     );
   });
@@ -143,7 +143,7 @@ describe('useDeferUntilIntersected', () => {
     );
 
     unmount();
-    expect(MockIntersectionObserver.instances[0].disconnected).toBe(true);
+    expect(MockIntersectionObserver.instances[0]!.disconnected).toBe(true);
   });
   it.each([null, undefined])(
     '参照自体が%sの場合は待たずにreadyになる',
@@ -169,7 +169,7 @@ describe('useDeferUntilIntersected', () => {
       { initialProps: { ref: refA as RefObject<HTMLElement | null> | null } },
     );
     act(() => {
-      MockIntersectionObserver.instances[0].trigger(true);
+      MockIntersectionObserver.instances[0]!.trigger(true);
     });
     expect(result.current.state).toBe('ready');
 
@@ -180,7 +180,8 @@ describe('useDeferUntilIntersected', () => {
     expect(result.current.state).toBe('pending');
 
     act(() => {
-      MockIntersectionObserver.instances.at(-1)!.trigger(true);
+      const { instances } = MockIntersectionObserver;
+      instances[instances.length - 1]!.trigger(true);
     });
     expect(result.current.state).toBe('ready');
   });

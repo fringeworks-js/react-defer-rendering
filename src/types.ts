@@ -65,8 +65,9 @@ export type DeferRenderingResult<N extends ReactNode> = {
 
   /**
    * 描画するノード
+   * 表示を遅らせている間は null、該当するノードを指定していない場合は undefined
    */
-  node: N;
+  node: N | null | undefined;
 };
 
 /**

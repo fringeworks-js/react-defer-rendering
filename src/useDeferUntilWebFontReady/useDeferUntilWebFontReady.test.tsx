@@ -41,7 +41,7 @@ async function flush() {
  * waitForWebFontに渡されたsignalを取得する
  */
 function getSignal(callIndex: number): AbortSignal {
-  return waitForWebFontMock.mock.calls[callIndex][1].signal;
+  return waitForWebFontMock.mock.calls[callIndex]![1].signal;
 }
 
 describe('useDeferUntilWebFontReady', () => {

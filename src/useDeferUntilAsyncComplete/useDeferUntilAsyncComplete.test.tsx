@@ -18,7 +18,7 @@ describe('useDeferUntilAsyncComplete', () => {
     expect(result.current.state).toBe('pending');
 
     await act(async () => {
-      await asyncFn.mock.results[0].value;
+      await asyncFn.mock.results[0]!.value;
     });
     expect(result.current.state).toBe('ready');
   });
@@ -30,7 +30,7 @@ describe('useDeferUntilAsyncComplete', () => {
     );
 
     await act(async () => {
-      await asyncFn.mock.results[0].value.catch(() => {});
+      await asyncFn.mock.results[0]!.value.catch(() => {});
     });
     expect(result.current.state).toBe('fallback');
   });
@@ -49,7 +49,7 @@ describe('useDeferUntilAsyncComplete', () => {
 
     // asyncFnの解決を待ってから終了する（act警告防止）
     await act(async () => {
-      await asyncFn.mock.results[0].value;
+      await asyncFn.mock.results[0]!.value;
     });
   });
   it('asyncFnが同期的に例外を投げた場合はfallbackになる', () => {
@@ -87,7 +87,7 @@ describe('useDeferUntilAsyncComplete', () => {
 
     await act(async () => {
       rejectFn(new Error('failed'));
-      await asyncFn.mock.results[0].value.catch(() => {});
+      await asyncFn.mock.results[0]!.value.catch(() => {});
     });
     expect(result.current.state).toBe('ready');
   });
