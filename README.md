@@ -1,6 +1,6 @@
 # @fringeworks/react-defer-rendering
 
-`@fringeworks/react-defer-rendering` is a niche library specialized in deferring the rendering of components until a specified condition is met.\
+`@fringeworks/react-defer-rendering` is a library some will find handy, specialized in deferring the rendering of components until a specified condition is met.\
 It provides a set of hooks covering a wide range of conditions, including timers, Promises, and browser APIs (`matchMedia`, `IntersectionObserver`, etc.).
 
 **[日本語のREADMEはこちら](./README.ja.md)**

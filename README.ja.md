@@ -1,6 +1,6 @@
 # @fringeworks/react-defer-rendering
 
-`@fringeworks/react-defer-rendering` は、指定した条件が満たされるまでコンポーネントの描画を遅延させることに特化したニッチなライブラリです。\
+`@fringeworks/react-defer-rendering` は、指定した条件が満たされるまでコンポーネントの描画を遅延させることに特化した、誰かにとっては便利なライブラリです。\
 タイマー、Promise、ブラウザAPI（`matchMedia`、`IntersectionObserver`等）など、様々な条件に対応したフック群を提供します。
 
 **[English README is available here](./README.md)**

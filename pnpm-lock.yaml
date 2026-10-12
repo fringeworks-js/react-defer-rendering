@@ -126,11 +126,11 @@ importers:
         version: 2.8.1
     devDependencies:
       '@fringeworks/dev':
-        specifier: ^0.8.0
-        version: 0.8.0
+        specifier: ^0.9.2
+        version: 0.9.2
       '@fringeworks/rollup-plugin-dist-package':
-        specifier: ^0.8.0
-        version: 0.8.0(rollup@4.64.0)
+        specifier: ^0.8.1
+        version: 0.8.1(rollup@4.64.0)
       '@testing-library/react':
         specifier: ^16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -472,8 +472,8 @@ packages:
   '@fringeworks/constants@0.8.0':
     resolution: {integrity: sha512-5p1ezW9x5pwyhMWCk6bdEri3s0F8CsIDXCh8J47n+LaXS6ULyodI0BZx7mnquV6GEgCgN5oDy0q5nknlcon4yA==}
 
-  '@fringeworks/dev@0.8.0':
-    resolution: {integrity: sha512-YA+uqgbCzWHRWm7YSm32+kchKFI6PtlloGsghAEmNw/TfONN42tbm76/yOe8dHfErKplVc0oreI0EpzCBS9wQA==}
+  '@fringeworks/dev@0.9.2':
+    resolution: {integrity: sha512-h+iKiPSsrTMkSZh+H+4hUEjEel6iSaACv1mWi64s5ymn1zcM5nizRv7oaQkoD6QN3iPYyaxSehz9PBtf/ZJ7UQ==}
 
   '@fringeworks/react-utils@0.8.0':
     resolution: {integrity: sha512-XrldP8bKVWILny+TO2bdcmY4d4q4R+rUCMWx8R4VeYl91/6vKEsdk4p0bESLPppFnRnxGchiNgxNNo3mUASsqQ==}
@@ -484,8 +484,8 @@ packages:
       react-dom:
         optional: true
 
-  '@fringeworks/rollup-plugin-dist-package@0.8.0':
-    resolution: {integrity: sha512-ymifDraR1cZ8dk5gUaE6/CEnXO3sH9s12gHJlSIkyVWh3oDjkkmrB068GZH6Lm0vQnMcAmxsNRDwy9ww5jRROA==}
+  '@fringeworks/rollup-plugin-dist-package@0.8.1':
+    resolution: {integrity: sha512-bowRWF5tCGGDS1oEfrkWviF3+sh+U9AGP611eM4aHYKYKWTE8EXFvoN3/uZo7fc10CTssn/U7yrMpUirAfpB3w==}
     peerDependencies:
       rollup: ^4.0.0
 
@@ -2149,7 +2149,7 @@ snapshots:
 
   '@fringeworks/constants@0.8.0': {}
 
-  '@fringeworks/dev@0.8.0':
+  '@fringeworks/dev@0.9.2':
     dependencies:
       fast-glob: 3.3.3
       fs-extra: 11.4.1
@@ -2164,9 +2164,8 @@ snapshots:
     optionalDependencies:
       react-dom: 19.3.0(react@19.3.0)
 
-  '@fringeworks/rollup-plugin-dist-package@0.8.0(rollup@4.64.0)':
+  '@fringeworks/rollup-plugin-dist-package@0.8.1(rollup@4.64.0)':
     dependencies:
-      fast-glob: 3.3.3
       fs-extra: 11.4.1
       rollup: 4.64.0
       sort-package-json: 3.7.1

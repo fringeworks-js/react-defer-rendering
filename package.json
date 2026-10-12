@@ -2,6 +2,7 @@
   "name": "@fringeworks/react-defer-rendering",
   "version": "0.8.0",
   "private": true,
+  "description": "A library some will find handy, specialized in deferring the rendering of components until a specified condition is met.",
   "keywords": [
     "react",
     "layout",
@@ -38,8 +39,8 @@
     "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "@fringeworks/dev": "^0.8.0",
-    "@fringeworks/rollup-plugin-dist-package": "^0.8.0",
+    "@fringeworks/dev": "^0.9.2",
+    "@fringeworks/rollup-plugin-dist-package": "^0.8.1",
     "@testing-library/react": "^16.3.2",
     "@types/node": "^25.5.0",
     "@types/react": "^19.0.0",
