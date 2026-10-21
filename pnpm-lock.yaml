@@ -110,21 +110,21 @@ importers:
   .:
     dependencies:
       '@fringeworks/react-utils':
-        specifier: ^0.8.1
-        version: 0.8.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        specifier: ^0.9.0
+        version: 0.9.0(react@19.3.0)
       '@fringeworks/types':
-        specifier: ^0.9.1
-        version: 0.9.1
+        specifier: ^0.9.2
+        version: 0.9.2
       '@fringeworks/utils':
         specifier: ^0.11.1
         version: 0.11.1
       '@fringeworks/web-font-observer':
-        specifier: ^0.8.1
-        version: 0.8.1
+        specifier: ^0.9.0
+        version: 0.9.0
     devDependencies:
       '@fringeworks/dev':
-        specifier: ^0.12.0
-        version: 0.12.0(eslint@10.13.0(supports-color@7.2.0))(prettier@3.9.10)(rollup@4.64.0)(supports-color@7.2.0)(tsdown@0.23.1(tsx@4.23.15)(typescript@6.0.3))(typescript@6.0.3)
+        specifier: ^0.13.1
+        version: 0.13.1(eslint@10.13.0(supports-color@7.2.0))(prettier@3.9.10)(rollup@4.64.0)(supports-color@7.2.0)(tsdown@0.23.1(tsx@4.23.15)(typescript@6.0.3))(typescript@6.0.3)
       '@testing-library/react':
         specifier: ^16.3.3
         version: 16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -143,9 +143,6 @@ importers:
       eslint:
         specifier: ^10.12.0
         version: 10.13.0(supports-color@7.2.0)
-      fast-glob:
-        specifier: ^3.3.3
-        version: 3.3.3
       jsdom:
         specifier: ^30.1.1
         version: 30.1.2
@@ -158,9 +155,6 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.3.0(react@19.3.0)
-      rimraf:
-        specifier: ^6.1.3
-        version: 6.1.3
       tsdown:
         specifier: ^0.23.1
         version: 0.23.1(tsx@4.23.15)(typescript@6.0.3)
@@ -536,12 +530,8 @@ packages:
       '@noble/hashes':
         optional: true
 
-  '@fringeworks/constants@0.8.1':
-    resolution: {integrity: sha512-QwfsKn0p1aZlabPg/Sawtmc9b0oDFqLiyd0tlZz4zAGlwfRgshia+UnnzfAu63RpHVXiZPODiN+oMJ3DrdtJdQ==}
-    deprecated: No longer maintained. Use @fringeworks/types instead.
-
-  '@fringeworks/dev@0.12.0':
-    resolution: {integrity: sha512-v5YFEgreK3MqFfuVqTLUyvjXKMik/rhg+U9pEUHuEWkBVq1Tb8BiJC65xNIerfWvAQK02re4UKNAgq5WK4YRhQ==}
+  '@fringeworks/dev@0.13.1':
+    resolution: {integrity: sha512-DBofYsRxKLpNbhoTVhiyKgA68ZCHfLu5TqCbF2C+9EqU/amyAHTlJW0Md+d7sMc1SEh31vLqK2MmAMuyNdR2Fg==}
     peerDependencies:
       eslint: ^10.0.0
       prettier: ^3.0.0
@@ -557,34 +547,24 @@ packages:
       typescript:
         optional: true
 
-  '@fringeworks/react-utils@0.8.1':
-    resolution: {integrity: sha512-5Ac1wHaeMDs3JpZWvhzfVDP87L3S2L0DSkjONcXOsIB5WAxLNoj1g24Nut+WSS3qk2sM5pysl8T1uNYWXOi/lw==}
+  '@fringeworks/react-utils@0.9.0':
+    resolution: {integrity: sha512-5IpO58KWndR8f1G8pk2MDTGFs6g16RUt/6wDj3rziUerNKu67eWjRyeXv0vudnMwvQAMxMNgG1ZpPy5Fq7HPiQ==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
 
   '@fringeworks/rollup-plugin-dist-package@0.9.1':
     resolution: {integrity: sha512-KP1giyKf0jzF/imU6+Ij+ES3NKiemE2JHyIPUcTJ0XElPWWxoxZKmdE1Bnnk4giu9dH6YooaPb6JOJzWsjhHSA==}
     peerDependencies:
       rollup: ^4.0.0
 
-  '@fringeworks/types@0.8.1':
-    resolution: {integrity: sha512-k5tw7JV4cyYtFSi8BokNa9eCiCwKjbtE96Hpwp0GD/bYiRBYZyk6AOnSjX5xPJmjCwRBC4HkyDIiDjXmQz/s6Q==}
-
-  '@fringeworks/types@0.9.1':
-    resolution: {integrity: sha512-OAp5GvYBIVW35rJbE4ZeC/X0a+h3Tt1gXP48Q9hEj8D1HRi1dlWKZnjq1xxx2ESZdeqOST4AXdDziB3zO5gOgA==}
+  '@fringeworks/types@0.9.2':
+    resolution: {integrity: sha512-fXCzLgsFnLhe1cnUVfArOh6IHpNCeQ9JXdgx4vwx0cNEkumy6iy+HDpDt8xY5YbXRf5oxxrBumdQS+4+54Ivtg==}
 
   '@fringeworks/utils@0.11.1':
     resolution: {integrity: sha512-siGwF0sLB8SyU9FBoR+gWMdm8Vml8dYaSD87X7hpZ7kUXs1fzttTIiXlswMH8fgs/tDCV4spK8yUAJtoZ9EBWw==}
 
-  '@fringeworks/utils@0.9.2':
-    resolution: {integrity: sha512-49xSSEnWe4xEl05hciY6rdQjHs3iIdg3fDW2esF/bFs1hB5gqXiRKZNGfnUIXzRrCBeBZs5bDPJn22v5JyE/Fw==}
-
-  '@fringeworks/web-font-observer@0.8.1':
-    resolution: {integrity: sha512-9wyYu3/Zdu2Dt9LE0QiMAsiF5r774dSNbut7+GZ0fKXQ2QlTy7H0JFHN6ZWZEJAA/odStMMDfSMRlZm8WgTF+g==}
+  '@fringeworks/web-font-observer@0.9.0':
+    resolution: {integrity: sha512-v29XsKVxKIPfHHTTe2aqE5fhs5B0Spr4BU0sdyjv+T/aHaqzwqTI0DBMwctly+w1WxPWxXYD5OlE+k+ROYG8eg==}
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -1596,10 +1576,6 @@ packages:
     resolution: {integrity: sha512-XxwI8EOhVQgWp6iDL+3b0r86f4d6AX6zSU55HfB4ydCEuXLXc5FcYeOu+nnGftS4TEju/11rt4KJPTMgbfmv4A==}
     engines: {node: '>=10.13.0'}
 
-  glob@13.0.6:
-    resolution: {integrity: sha512-Wjlyrolmm8uDpm/ogGyXZXb1Z+Ca2B8NbJwqBVg0axK9GbBeoS7yGV6vjXnYdGm6X53iehEuxxbyiKp8QmN4Vw==}
-    engines: {node: 18 || 20 || >=22}
-
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
@@ -1809,10 +1785,6 @@ packages:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
 
-  lru-cache@11.5.1:
-    resolution: {integrity: sha512-RPimw/7aMdv2oqRrxKwvZXcPfwBrn/JZ2xYcY9Hus/6LaS3VOAKVWKWgNLCFSiOm1ESXinjsDlidVU7JlnCN2A==}
-    engines: {node: 20 || >=22}
-
   lru-cache@11.5.3:
     resolution: {integrity: sha512-U4N8FgzmWxc8k1VH8Kr6lQg18U7Fjvby6wXHVRX/ZZ7IwWbRMgrRbP0Wrb5q5NVinryp4SQampHKdvtecItxUg==}
     engines: {node: 20 || >=22}
@@ -1848,10 +1820,6 @@ packages:
   minimatch@10.2.5:
     resolution: {integrity: sha512-MULkVLfKGYDFYejP07QOurDLLQpcjk7Fw+7jXS2R2czRQzR56yHRveU5NDJEOviH+hETZKSkIk5c+T23GjFUMg==}
     engines: {node: 18 || 20 || >=22}
-
-  minipass@7.1.3:
-    resolution: {integrity: sha512-tEBHqDnIoM/1rXME1zgka9g6Q2lcoCkxHLuc7ODJ5BxbP5d4c2Z5cGgtXAku59200Cx7diuHTOYfSBD8n6mm8A==}
-    engines: {node: '>=16 || 14 >=14.17'}
 
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
@@ -1891,9 +1859,6 @@ packages:
     resolution: {integrity: sha512-LaNjtRWUBY++zB5nE/NwcaoMylSPk+S+ZHNB1TzdbMJMny6dynpAGt7X/tl/QYq3TIeE6nxHppbo2LGymrG5Pw==}
     engines: {node: '>=10'}
 
-  package-json-from-dist@1.0.1:
-    resolution: {integrity: sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==}
-
   parse5@8.0.1:
     resolution: {integrity: sha512-z1e/HMG90obSGeidlli3hj7cbocou0/wa5HacvI3ASx34PecNjNQeaHNo5WIZpWofN9kgkqV1q5YvXe3F0FoPw==}
 
@@ -1904,10 +1869,6 @@ packages:
   path-key@3.1.1:
     resolution: {integrity: sha512-ojmeN0qd+y0jszEtoY48r0Peq5dwMEkIlCOu6Q5f41lfkswXuKtYrhgoTpLnyIcHm24Uhqx+5Tqm2InSwLhE6Q==}
     engines: {node: '>=8'}
-
-  path-scurry@2.0.2:
-    resolution: {integrity: sha512-3O/iVVsJAPsOnpwWIeD+d6z/7PmqApyQePUtCndjatj/9I5LylHvt5qluFaBT3I5h3r1ejfR056c+FCv+NnNXg==}
-    engines: {node: 18 || 20 || >=22}
 
   pathe@2.0.3:
     resolution: {integrity: sha512-WUjGcAqP1gQacoQe+OBJsFA7Ld4DyXuUIjZ5cc75cLHvJ7dtNsTugphxIADwspS+AraAUePCKrSVtPLFj/F88w==}
@@ -2006,11 +1967,6 @@ packages:
   reusify@1.1.0:
     resolution: {integrity: sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
-
-  rimraf@6.1.3:
-    resolution: {integrity: sha512-LKg+Cr2ZF61fkcaK1UdkH2yEBBKnYjTyWzTJT6KNPcSPaiT7HSdhtMXQuN5wkTX0Xu72KQ1l8S42rlmexS2hSA==}
-    engines: {node: 20 || >=22}
-    hasBin: true
 
   rolldown-plugin-dts@0.28.8:
     resolution: {integrity: sha512-FVhfqxorCWcc20BVT5eVRfRjzLLl6mgzjcMR4gSBf0K4oQMXT0qoHhhzfXy0L7y83fQy7Ug5ZDNk90xM3/LiCQ==}
@@ -2715,9 +2671,7 @@ snapshots:
 
   '@exodus/bytes@1.16.0': {}
 
-  '@fringeworks/constants@0.8.1': {}
-
-  '@fringeworks/dev@0.12.0(eslint@10.13.0(supports-color@7.2.0))(prettier@3.9.10)(rollup@4.64.0)(supports-color@7.2.0)(tsdown@0.23.1(tsx@4.23.15)(typescript@6.0.3))(typescript@6.0.3)':
+  '@fringeworks/dev@0.13.1(eslint@10.13.0(supports-color@7.2.0))(prettier@3.9.10)(rollup@4.64.0)(supports-color@7.2.0)(tsdown@0.23.1(tsx@4.23.15)(typescript@6.0.3))(typescript@6.0.3)':
     dependencies:
       '@eslint/js': 10.0.1(eslint@10.13.0(supports-color@7.2.0))
       '@fringeworks/rollup-plugin-dist-package': 0.9.1(rollup@4.64.0)
@@ -2740,12 +2694,9 @@ snapshots:
       - supports-color
       - vue-tsc
 
-  '@fringeworks/react-utils@0.8.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@fringeworks/react-utils@0.9.0(react@19.3.0)':
     dependencies:
-      '@fringeworks/utils': 0.9.2
       react: 19.3.0
-    optionalDependencies:
-      react-dom: 19.3.0(react@19.3.0)
 
   '@fringeworks/rollup-plugin-dist-package@0.9.1(rollup@4.64.0)':
     dependencies:
@@ -2754,24 +2705,15 @@ snapshots:
       sort-package-json: 3.7.1
       type-fest: 5.10.0
 
-  '@fringeworks/types@0.8.1': {}
-
-  '@fringeworks/types@0.9.1': {}
+  '@fringeworks/types@0.9.2': {}
 
   '@fringeworks/utils@0.11.1':
     dependencies:
-      '@fringeworks/types': 0.9.1
+      '@fringeworks/types': 0.9.2
       klona: 2.0.6
       remeda: 2.50.0
 
-  '@fringeworks/utils@0.9.2':
-    dependencies:
-      '@fringeworks/constants': 0.8.1
-      '@fringeworks/types': 0.8.1
-      klona: 2.0.6
-      remeda: 2.50.0
-
-  '@fringeworks/web-font-observer@0.8.1': {}
+  '@fringeworks/web-font-observer@0.9.0': {}
 
   '@humanfs/core@0.19.2':
     dependencies:
@@ -3624,12 +3566,6 @@ snapshots:
     dependencies:
       is-glob: 4.0.3
 
-  glob@13.0.6:
-    dependencies:
-      minimatch: 10.2.5
-      minipass: 7.1.3
-      path-scurry: 2.0.2
-
   graceful-fs@4.2.11: {}
 
   has-flag@4.0.0: {}
@@ -3802,8 +3738,6 @@ snapshots:
     dependencies:
       p-locate: 5.0.0
 
-  lru-cache@11.5.1: {}
-
   lru-cache@11.5.3: {}
 
   lru-cache@5.1.1:
@@ -3839,8 +3773,6 @@ snapshots:
     dependencies:
       brace-expansion: 5.0.6
 
-  minipass@7.1.3: {}
-
   ms@2.1.3: {}
 
   nanoid@3.3.19: {}
@@ -3873,8 +3805,6 @@ snapshots:
     dependencies:
       p-limit: 3.1.0
 
-  package-json-from-dist@1.0.1: {}
-
   parse5@8.0.1:
     dependencies:
       entities: 8.1.0
@@ -3882,11 +3812,6 @@ snapshots:
   path-exists@4.0.0: {}
 
   path-key@3.1.1: {}
-
-  path-scurry@2.0.2:
-    dependencies:
-      lru-cache: 11.5.1
-      minipass: 7.1.3
 
   pathe@2.0.3: {}
 
@@ -3953,11 +3878,6 @@ snapshots:
   resolve-pkg-maps@1.0.0: {}
 
   reusify@1.1.0: {}
-
-  rimraf@6.1.3:
-    dependencies:
-      glob: 13.0.6
-      package-json-from-dist: 1.0.1
 
   rolldown-plugin-dts@0.28.8(rolldown@1.2.14)(typescript@6.0.3):
     dependencies:
