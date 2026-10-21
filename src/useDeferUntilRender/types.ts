@@ -10,7 +10,8 @@ export type UseDeferUntilRenderOptions<P extends ReactNode = ReactNode> =
     rootRef?: RefObject<Element | Document | null | undefined>;
 
     /**
-     * DOM変更検知時のデバウンス時間（ミリ秒）
+     * DOMの変化を反映するまでの時間（ミリ秒）\
+     * この間に続けて変化した場合は、最後の変化から数え直す。0の場合は次のタスクで反映する\
      * デフォルトは100ms
      * @default 100
      */

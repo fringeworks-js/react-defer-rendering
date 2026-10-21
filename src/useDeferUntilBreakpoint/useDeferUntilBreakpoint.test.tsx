@@ -97,6 +97,27 @@ describe('useDeferUntilBreakpoint', () => {
     expect(result.current.state).toBe('ready');
   });
 
+  it('detectionDelayの間に再描画されても、変化はまだ反映しない', () => {
+    const matchMediaMock = createMatchMediaMock({
+      '(max-width: 768px)': false,
+    });
+    const { result, rerender } = renderHook(() =>
+      useDeferUntilBreakpoint('target', '(max-width: 768px)', {
+        detectionDelay: 100,
+      }),
+    );
+    act(() => {
+      matchMediaMock.trigger('(max-width: 768px)', true);
+    });
+    rerender();
+    expect(result.current.state).toBe('pending');
+
+    act(() => {
+      vi.advanceTimersByTime(100);
+    });
+    expect(result.current.state).toBe('ready');
+  });
+
   it('preserveOnceReadyを指定し、既にmatchesがtrueの場合は変更を監視しない', () => {
     const matchMediaMock = createMatchMediaMock({
       '(max-width: 768px)': true,

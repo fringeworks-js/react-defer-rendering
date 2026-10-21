@@ -1,9 +1,10 @@
 'use client';
 
+import setLongTimeout from '@fringeworks/utils/timer/setLongTimeout';
 import type { ReactNode } from 'react';
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import type { DeferRenderingResult } from '../types';
-import useDeferUntilTimeout from '../useDeferUntilTimeout';
+import useDeferUntilTrue from '../useDeferUntilTrue';
 import type { UseDeferUntilDateOptions } from './types';
 
 /**
@@ -22,10 +23,26 @@ export default function useDeferUntilDate<
   options: UseDeferUntilDateOptions<P> = {},
 ): DeferRenderingResult<T | P> {
   const time = date ? date.getTime() : null;
-  const defer = useMemo(
-    () => (time != null ? time - Date.now() : null),
-    [time],
+  // 到達した日時（ミリ秒）
+  // 初回だけはマウント時点で判定し、既に過ぎている場合は待たずに描画する
+  const [reachedTime, setReachedTime] = useState(() =>
+    time != null && time <= Date.now() ? time : null,
   );
 
-  return useDeferUntilTimeout(target, defer, options);
+  useEffect(() => {
+    if (time == null) {
+      return;
+    }
+    // 残り時間はレンダー中ではなくeffect内で計算する
+    return setLongTimeout(
+      () => setReachedTime(time),
+      Math.max(0, time - Date.now()),
+    );
+  }, [time]);
+
+  return useDeferUntilTrue(
+    target,
+    time == null || reachedTime === time,
+    options,
+  );
 }

@@ -51,6 +51,29 @@ describe('useDeferUntilRender', () => {
     expect(result.current.node).toBe('target');
   });
 
+  it('detectionDelayの間に再描画されても、変化はまだ反映しない', async () => {
+    const { result, rerender } = renderHook(() =>
+      useDeferUntilRender('target', '.marker', {
+        rootRef,
+        detectionDelay: 100,
+      }),
+    );
+    const marker = document.createElement('div');
+    marker.className = 'marker';
+
+    await act(async () => {
+      root.appendChild(marker);
+      await Promise.resolve();
+    });
+    rerender();
+    expect(result.current.state).toBe('pending');
+
+    await act(async () => {
+      vi.advanceTimersByTime(100);
+    });
+    expect(result.current.state).toBe('ready');
+  });
+
   it('rootRefで指定した範囲外の変更には反応しない', async () => {
     const outside = document.createElement('div');
     document.body.appendChild(outside);

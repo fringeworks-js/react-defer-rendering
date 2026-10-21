@@ -93,6 +93,61 @@ describe('useDeferUntilOnReady', () => {
       });
       expect(result.current.state).toBe('fallback');
     });
+
+    it('待機中に別のハンドラーを呼んだ場合は、最後に呼んだハンドラーの状態になる', () => {
+      const { result } = renderHook(() =>
+        useDeferUntilOnReady('target', { onReadyDelay: 100 }),
+      );
+
+      act(() => {
+        result.current.onReady();
+      });
+      act(() => {
+        vi.advanceTimersByTime(50);
+        result.current.onFallback();
+      });
+      expect(result.current.state).toBe('fallback');
+
+      act(() => {
+        vi.advanceTimersByTime(100);
+      });
+      expect(result.current.state).toBe('fallback');
+    });
+
+    it('待機中に同じハンドラーを呼んだ場合は、そこから数え直す', () => {
+      const { result } = renderHook(() =>
+        useDeferUntilOnReady('target', { onReadyDelay: 100 }),
+      );
+
+      act(() => {
+        result.current.onReady();
+      });
+      act(() => {
+        vi.advanceTimersByTime(50);
+        result.current.onReady();
+      });
+      act(() => {
+        vi.advanceTimersByTime(99);
+      });
+      expect(result.current.state).toBe('pending');
+
+      act(() => {
+        vi.advanceTimersByTime(1);
+      });
+      expect(result.current.state).toBe('ready');
+    });
+
+    it('アンマウント時に待機中の状態の変更を取り消す', () => {
+      const { result, unmount } = renderHook(() =>
+        useDeferUntilOnReady('target', { onReadyDelay: 100 }),
+      );
+
+      act(() => {
+        result.current.onReady();
+      });
+      unmount();
+      expect(vi.getTimerCount()).toBe(0);
+    });
   });
   it('optionsを省略できる', () => {
     const { result } = renderHook(() => useDeferUntilOnReady('target'));

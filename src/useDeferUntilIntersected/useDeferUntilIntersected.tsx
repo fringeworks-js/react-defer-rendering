@@ -1,6 +1,5 @@
 'use client';
 
-import unit from '@fringeworks/utils/string/unit';
 import type { ReactNode, RefObject } from 'react';
 import { useCallback, useRef, useSyncExternalStore } from 'react';
 import type { DeferRenderingResult } from '../types';
@@ -38,7 +37,6 @@ export default function useDeferUntilIntersected<
   const subscribe = useCallback(
     (onStoreChange: () => void) => {
       const element = elementRef?.current;
-      const container = rootRef.current;
       if (observedElementRef.current !== element) {
         observedElementRef.current = element;
         if (snapshotRef.current !== initialCondition) {
@@ -50,6 +48,7 @@ export default function useDeferUntilIntersected<
         return () => {};
       }
 
+      const container = rootRef.current;
       const observer = new IntersectionObserver(
         (entries) => {
           const entry = entries[0];
@@ -60,7 +59,8 @@ export default function useDeferUntilIntersected<
         },
         {
           root: container,
-          rootMargin: unit(rootMargin),
+          rootMargin:
+            typeof rootMargin === 'number' ? `${rootMargin}px` : rootMargin,
           threshold,
         },
       );
@@ -71,14 +71,8 @@ export default function useDeferUntilIntersected<
         observer.disconnect(); // クリーンアップ
       };
     },
-    [
-      elementRef,
-      elementRef?.current,
-      rootRef.current,
-      threshold,
-      rootMargin,
-      initialCondition,
-    ],
+    // 要素は購読時に参照から取得するため、参照自体を依存にする
+    [elementRef, rootRef, threshold, rootMargin, initialCondition],
   );
   // 参照自体が未指定の場合は待つ対象がないため即座に描画
   // （参照はあるが要素がまだない場合は、マウント待ちとして扱う）

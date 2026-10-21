@@ -1,8 +1,7 @@
 'use client';
 
-import useIsMounted from '@fringeworks/react-utils/hooks/useIsMounted';
 import type { ReactNode } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { RenderingState } from '../constants';
 import type { DeferRenderingResult } from '../types';
 import type { UseDeferUntilReadyOptions } from './types';
@@ -32,50 +31,51 @@ export default function useDeferUntilReady<
     preserveOnceFallback,
     preserveOnceReady,
   } = options;
-  const latestStateRef = useRef<RenderingState>(null);
-  const latestState = latestStateRef.current;
-  let currentState = state;
-  if (preserveOnceReady && latestState === RenderingState.ready) {
-    // 一度readyになったらready状態を保持する
-    currentState = latestState;
-  } else if (preserveOnceFallback && latestState === RenderingState.fallback) {
-    // 一度fallbackになったらfallback状態を保持する
-    currentState = latestState;
+  // 保持している状態（preserveOnceReady・preserveOnceFallbackで、一度なった状態を保持する）
+  const [preservedState, setPreservedState] = useState<RenderingState | null>(
+    null,
+  );
+  const isPreserved =
+    (preserveOnceReady && preservedState === RenderingState.ready) ||
+    (preserveOnceFallback && preservedState === RenderingState.fallback);
+  const currentState = isPreserved && preservedState ? preservedState : state;
+  if (
+    !isPreserved &&
+    ((preserveOnceReady && state === RenderingState.ready) ||
+      (preserveOnceFallback && state === RenderingState.fallback))
+  ) {
+    // 描画中に状態を調整する（Reactがコミット前に描画をやり直すため、破棄された描画の状態は残らない）
+    setPreservedState(state);
   }
-  latestStateRef.current = currentState;
+
   // currentに応じた遅延時間を取得
   const defer = {
     pending: pendingDefer,
     fallback: fallbackDefer,
     ready: readyDefer,
   }[currentState];
-  const deferRef = useRef(defer);
-  deferRef.current = defer;
   // 表示中の状態（nullは遅延中でまだ何も表示していない状態）
   // ノード自体ではなく状態を保持することで、表示後のノードの更新を反映する
   const [shownState, setShownState] = useState<RenderingState | null>(() =>
     defer == null ? currentState : null,
   );
-  const isMounted = useIsMounted();
+  if (defer == null && shownState !== currentState) {
+    // 遅延なしの場合は、effectを待たずに描画中に反映する
+    setShownState(currentState);
+  }
 
   useEffect(() => {
-    const defer = deferRef.current;
     if (defer == null) {
-      // 遅延なし
-      setShownState(currentState);
       return;
-    } else {
-      // 遅延あり
-      const timeoutId = setTimeout(() => {
-        if (isMounted()) {
-          setShownState(currentState);
-        }
-      }, defer);
-      return () => {
-        clearTimeout(timeoutId);
-      };
     }
-  }, [currentState]);
+    // 遅延あり
+    const timeoutId = setTimeout(() => {
+      setShownState(currentState);
+    }, defer);
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [currentState, defer]);
 
   // 表示中の状態に応じた最新のノードを取得
   const node =

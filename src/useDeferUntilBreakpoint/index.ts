@@ -1,4 +1,5 @@
-'use client';
-
 export type * from './types';
-export { default } from './useDeferUntilBreakpoint';
+export {
+  default,
+  default as useDeferUntilBreakpoint,
+} from './useDeferUntilBreakpoint';

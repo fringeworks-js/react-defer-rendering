@@ -52,13 +52,15 @@ describe('useDeferUntilAsyncComplete', () => {
       await asyncFn.mock.results[0]!.value;
     });
   });
-  it('asyncFnが同期的に例外を投げた場合はfallbackになる', () => {
+  it('asyncFnが同期的に例外を投げた場合はfallbackになる', async () => {
     const asyncFn = vi.fn((): Promise<void> => {
       throw new Error('sync error');
     });
     const { result } = renderHook(() =>
       useDeferUntilAsyncComplete('target', asyncFn, { fallback: 'error' }),
     );
+    // rejectされた場合と同じく、Promiseの完了を待ってから反映される
+    await act(async () => {});
     expect(result.current.state).toBe('fallback');
     expect(result.current.node).toBe('error');
   });

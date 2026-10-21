@@ -1,6 +1,5 @@
 'use client';
 
-import useIsMounted from '@fringeworks/react-utils/hooks/useIsMounted';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import type { DeferRenderingResult } from '../types';
@@ -25,13 +24,17 @@ export default function useDeferUntilChange<
   options: UseDeferUntilChangeOptions<P> = {},
 ): DeferRenderingResult<T | P> {
   const [prevValue, setPrevValue] = useState<unknown>(NO_VALUE);
-  const isMounted = useIsMounted();
-  const result = useDeferUntilTrue(target, prevValue === value, options);
+  // NaNも変化していない値として扱えるよう、Object.isで比較する
+  const result = useDeferUntilTrue(
+    target,
+    Object.is(prevValue, value),
+    options,
+  );
 
   useEffect(() => {
-    if (isMounted()) {
-      setPrevValue(value);
-    }
+    // 値が変わるたびにpendingを一度コミットしてからreadyにするのが仕様のため、effect内で更新する
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPrevValue(value);
   }, [value]);
 
   return result;

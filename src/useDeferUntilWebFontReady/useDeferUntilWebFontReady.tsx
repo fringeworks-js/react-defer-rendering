@@ -1,5 +1,6 @@
 'use client';
 
+import useLatestRef from '@fringeworks/react-utils/hooks/useLatestRef';
 import isWebFontLoaded from '@fringeworks/web-font-observer/isWebFontLoaded';
 import waitForWebFont from '@fringeworks/web-font-observer/waitForWebFont';
 import type { ReactNode } from 'react';
@@ -7,7 +8,6 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
   useSyncExternalStore,
 } from 'react';
@@ -45,12 +45,10 @@ export default function useDeferUntilWebFontReady<
     ...opts
   } = options;
   // 配列やオブジェクトをインラインで指定しても待機がやり直しにならないよう、内容から比較用のキーを作る
-  const normalizedFonts = normalizeFonts(fonts);
-  const fontsKey = JSON.stringify(normalizedFonts);
-  const webFonts = useMemo(() => normalizedFonts, [fontsKey]);
-  // loaderの参照が変わっただけでは待機をやり直さない
-  const loaderRef = useRef(loader);
-  loaderRef.current = loader;
+  const fontsKey = JSON.stringify(normalizeFonts(fonts));
+  const webFonts = useMemo(() => JSON.parse(fontsKey) as WebFont[], [fontsKey]);
+  // loaderの参照が変わっただけでは待機をやり直さない（最新のloaderはコミット時に反映される）
+  const loaderRef = useLatestRef(loader);
 
   // 待機の結果。どのWebフォントに対する結果かをキーで持ち、Webフォントが変わった時点で即座にpendingとして扱う
   const [result, setResult] = useState(() => ({
@@ -124,7 +122,7 @@ export default function useDeferUntilWebFontReady<
     return () => {
       controller.abort();
     };
-  }, [webFonts, timeout]);
+  }, [webFonts, fontsKey, timeout, loaderRef]);
 
   let state: RenderingState;
   if (isLoaded) {

@@ -1,4 +1,2 @@
-'use client';
-
 export type * from './types';
-export { default } from './useDeferUntilReady';
+export { default, default as useDeferUntilReady } from './useDeferUntilReady';

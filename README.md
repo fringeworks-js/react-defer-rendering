@@ -41,9 +41,9 @@ Because hooks cannot be called conditionally, you can make deferred rendering an
 | `useDeferUntilTimeout`, `useDeferUntilDate`, `useDeferUntilResolved`, `useDeferUntilAsyncComplete` | `null` / `undefined`                              |
 | `useDeferUntilBreakpoint`, `useDeferUntilRender`                                                   | `null` / `undefined` / empty string               |
 | `useDeferUntilWebFontReady`                                                                        | `null` / `undefined` / empty string / empty array |
-| `useDeferUntilIntersected`, `useDeferUntilScrolled`                                                | The ref object itself is `null` / `undefined`     |
+| `useDeferUntilIntersected`                                                                         | The ref object itself is `null` / `undefined`     |
 
-For `useDeferUntilIntersected` and `useDeferUntilScrolled`, a ref whose `current` is `null` means the element has not been mounted yet, so the state stays `pending`.
+For `useDeferUntilIntersected`, a ref whose `current` is `null` means the element has not been mounted yet, so the state stays `pending`.
 
 ```tsx
 function Heading({ fontFamily, children }: Props) {
@@ -116,7 +116,8 @@ const { node } = useDeferUntilDate(
 
 ### `useDeferUntilResolved`
 
-Defers rendering until a Promise settles (resolves or rejects).
+Defers rendering until a Promise settles (resolves or rejects).\
+Since waiting restarts whenever the Promise reference changes, do not create a new Promise on every render (create it outside the component, or memoize it with `useMemo` or similar).
 
 ```tsx
 import { useDeferUntilResolved } from '@fringeworks/react-defer-rendering';
@@ -129,7 +130,8 @@ const { node } = useDeferUntilResolved(<MyComponent />, fetchPromise, {
 
 ### `useDeferUntilAsyncComplete`
 
-Defers rendering until an async function finishes executing. `asyncFn` is invoked after mount (inside an effect), which also manages the creation of the Promise itself. It is not invoked during SSR.\nSince `asyncFn` is re-invoked whenever its reference changes, memoize it with `useCallback` or similar.
+Defers rendering until an async function finishes executing. `asyncFn` is invoked after mount (inside an effect), which also manages the creation of the Promise itself. It is not invoked during SSR.\
+Since `asyncFn` is re-invoked whenever its reference changes, memoize it with `useCallback` or similar.
 
 ```tsx
 import { useDeferUntilAsyncComplete } from '@fringeworks/react-defer-rendering';
@@ -162,7 +164,8 @@ const { node } = useDeferUntilChange(<Toast>{message}</Toast>, message, {
 
 ### `useDeferUntilOnReady`
 
-Lets you control the state at any timing by calling the returned `onReady` / `onFallback` / `onPending` handlers. Useful for conditions the hook itself cannot detect, such as event handlers.
+Lets you control the state at any timing by calling the returned `onReady` / `onFallback` / `onPending` handlers. Useful for conditions the hook itself cannot detect, such as event handlers.\
+Even when state changes are delayed with `onReadyDelay` / `onFallbackDelay` / `onPendingDelay`, calling any handler cancels the pending change, so the state ends up as the one of the last handler called.
 
 ```tsx
 import { useDeferUntilOnReady } from '@fringeworks/react-defer-rendering';
@@ -221,16 +224,7 @@ const { node } = useDeferUntilIntersected(<HeavyChart />, elementRef, {
 <div ref={elementRef}>{node}</div>;
 ```
 
-### `useDeferUntilScrolled`
-
-Defers rendering until a reference element becomes visible as a result of scrolling.
-
-```tsx
-const { node } = useDeferUntilScrolled(<LazyImage />, elementRef, {
-  pending: <Placeholder />,
-  rootMargin: 100,
-});
-```
+Use `rootMargin` to expand the area to check. A number is in pixels (the same value on all sides), and a string uses the `rootMargin` syntax of `IntersectionObserver` (such as `'100px 0px'` or `'10%'`; only `px` and `%` are allowed). Use `threshold` (0 to 1, defaults to `0.1`) to specify how much of the element must be visible.
 
 ### `useDeferUntilRender`
 
@@ -312,7 +306,7 @@ These options are shared across all hooks.
 
 Every hook in this library ships with a `'use client'` directive attached at build time. In React Server Components environments such as Next.js App Router, they are treated as client component boundaries without any additional configuration.
 
-`useDeferUntilBreakpoint`, `useDeferUntilIntersected`, `useDeferUntilScrolled`, and `useDeferUntilRender` depend on browser APIs (`matchMedia`, `IntersectionObserver`, `MutationObserver`, etc.), so their actual state cannot be determined on the server. These hooks accept an `initialCondition` option to specify the value used during SSR (it is treated as `false` if not specified). Similarly, `useDeferUntilWebFontReady` accepts an `initialState` option to specify its initial state during SSR.
+`useDeferUntilBreakpoint`, `useDeferUntilIntersected`, and `useDeferUntilRender` depend on browser APIs (`matchMedia`, `IntersectionObserver`, `MutationObserver`, etc.), so their actual state cannot be determined on the server. These hooks accept an `initialCondition` option to specify the value used during SSR (it is treated as `false` if not specified). Similarly, `useDeferUntilWebFontReady` accepts an `initialState` option to specify its initial state during SSR.
 
 ## License
 

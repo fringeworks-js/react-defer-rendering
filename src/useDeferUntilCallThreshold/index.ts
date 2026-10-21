@@ -1,4 +1,5 @@
-'use client';
-
 export type * from './types';
-export { default } from './useDeferUntilCallThreshold';
+export {
+  default,
+  default as useDeferUntilCallThreshold,
+} from './useDeferUntilCallThreshold';

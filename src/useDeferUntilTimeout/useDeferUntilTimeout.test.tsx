@@ -70,6 +70,29 @@ describe('useDeferUntilTimeout', () => {
     expect(result.current.state).toBe('ready');
   });
 
+  it('待機中にdeferが変わって元に戻った場合も、改めて待つ', () => {
+    const { result, rerender } = renderHook(
+      ({ defer }: { defer: number }) => useDeferUntilTimeout('target', defer),
+      { initialProps: { defer: 100 } },
+    );
+    act(() => {
+      vi.advanceTimersByTime(50);
+    });
+    rerender({ defer: 200 });
+    rerender({ defer: 100 });
+    expect(result.current.state).toBe('pending');
+
+    act(() => {
+      vi.advanceTimersByTime(99);
+    });
+    expect(result.current.state).toBe('pending');
+
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+    expect(result.current.state).toBe('ready');
+  });
+
   it('null -> 数値 -> null と変化した場合、pendingを経てreadyに戻る', () => {
     const { result, rerender } = renderHook(
       ({ defer }: { defer: number | null }) =>

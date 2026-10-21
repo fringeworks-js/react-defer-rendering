@@ -1,4 +1,5 @@
-'use client';
-
 export type * from './types';
-export { default } from './useDeferUntilTimeout';
+export {
+  default,
+  default as useDeferUntilTimeout,
+} from './useDeferUntilTimeout';

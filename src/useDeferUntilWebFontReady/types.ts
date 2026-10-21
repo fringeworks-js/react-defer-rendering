@@ -24,8 +24,7 @@ export type WebFontTarget = string | WebFont;
  * 複数のWebフォントを待つ場合は配列で指定する。配列内のnull/undefinedは無視される
  */
 export type WebFontTargets =
-  | WebFontTarget
-  | readonly (WebFontTarget | null | undefined)[];
+  WebFontTarget | readonly (WebFontTarget | null | undefined)[];
 
 export type UseDeferUntilWebFontReadyOptions<
   P extends ReactNode = ReactNode,

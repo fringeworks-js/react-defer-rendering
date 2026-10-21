@@ -1,7 +1,6 @@
 'use client';
 
-import useIsMounted from '@fringeworks/react-utils/hooks/useIsMounted';
-import setTimeoutExtended from '@fringeworks/utils/timer/setTimeoutExtended';
+import setLongTimeout from '@fringeworks/utils/timer/setLongTimeout';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import type { DeferRenderingResult } from '../types';
@@ -23,27 +22,27 @@ export default function useDeferUntilTimeout<
   defer: number | null | undefined,
   options: UseDeferUntilTimeoutOptions<P> = {},
 ): DeferRenderingResult<T | P> {
-  // 未指定の場合は待つ対象がなく、0以下の場合は既に指定時間を過ぎているため即座に描画
-  const [condition, setCondition] = useState(defer == null || defer <= 0);
-  const isMounted = useIsMounted();
+  // どの遅延時間に対する待機かを持つ
+  const [wait, setWait] = useState({ defer, isElapsed: false });
+  if (wait.defer !== defer) {
+    // deferが変わった場合は改めて待つ（描画中に状態を調整する）
+    setWait({ defer, isElapsed: false });
+  }
 
   useEffect(() => {
     if (defer == null || defer <= 0) {
-      setCondition(true);
       return;
     }
-
-    // deferが変わった場合は改めて待つ
-    setCondition(false);
-    const cancel = setTimeoutExtended(() => {
-      if (isMounted()) {
-        setCondition(true);
-      }
+    return setLongTimeout(() => {
+      setWait((current) =>
+        current.defer === defer ? { defer, isElapsed: true } : current,
+      );
     }, defer);
-    return () => {
-      cancel();
-    };
   }, [defer]);
+
+  // 未指定の場合は待つ対象がなく、0以下の場合は既に指定時間を過ぎているため即座に描画
+  const condition =
+    defer == null || defer <= 0 || (wait.defer === defer && wait.isElapsed);
 
   return useDeferUntilTrue(target, condition, options);
 }

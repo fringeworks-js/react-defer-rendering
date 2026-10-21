@@ -41,9 +41,9 @@ return node;
 | `useDeferUntilTimeout` / `useDeferUntilDate` / `useDeferUntilResolved` / `useDeferUntilAsyncComplete` | `null` / `undefined`                   |
 | `useDeferUntilBreakpoint` / `useDeferUntilRender`                                                     | `null` / `undefined` / 空文字          |
 | `useDeferUntilWebFontReady`                                                                           | `null` / `undefined` / 空文字 / 空配列 |
-| `useDeferUntilIntersected` / `useDeferUntilScrolled`                                                  | 参照（ref）自体が`null` / `undefined`  |
+| `useDeferUntilIntersected`                                                                            | 参照（ref）自体が`null` / `undefined`  |
 
-`useDeferUntilIntersected` / `useDeferUntilScrolled`では、参照はあるものの`ref.current`が`null`の場合は「要素がまだマウントされていない」とみなし、`pending`のままになります。
+`useDeferUntilIntersected`では、参照はあるものの`ref.current`が`null`の場合は「要素がまだマウントされていない」とみなし、`pending`のままになります。
 
 ```tsx
 function Heading({ fontFamily, children }: Props) {
@@ -116,7 +116,8 @@ const { node } = useDeferUntilDate(
 
 ### `useDeferUntilResolved`
 
-Promiseが解決（resolve/reject）するまで描画を遅延させます。
+Promiseが解決（resolve/reject）するまで描画を遅延させます。\
+Promiseの参照が変わるたびに待機をやり直すため、描画のたびに新しいPromiseを作らないでください（コンポーネントの外で作成するか、`useMemo`等でメモ化してください）。
 
 ```tsx
 import { useDeferUntilResolved } from '@fringeworks/react-defer-rendering';
@@ -129,7 +130,8 @@ const { node } = useDeferUntilResolved(<MyComponent />, fetchPromise, {
 
 ### `useDeferUntilAsyncComplete`
 
-非同期関数の実行が完了するまで描画を遅延させます。`asyncFn`はマウント後（effect内）に呼び出され、Promiseの生成自体を管理します。SSR時は呼び出されません。\n`asyncFn`の参照が変わるたびに再実行されるため、`useCallback`等でメモ化してください。
+非同期関数の実行が完了するまで描画を遅延させます。`asyncFn`はマウント後（effect内）に呼び出され、Promiseの生成自体を管理します。SSR時は呼び出されません。\
+`asyncFn`の参照が変わるたびに再実行されるため、`useCallback`等でメモ化してください。
 
 ```tsx
 import { useDeferUntilAsyncComplete } from '@fringeworks/react-defer-rendering';
@@ -162,7 +164,8 @@ const { node } = useDeferUntilChange(<Toast>{message}</Toast>, message, {
 
 ### `useDeferUntilOnReady`
 
-戻り値の`onReady` / `onFallback` / `onPending`を呼び出すことで、任意のタイミングで状態を制御できます。イベントハンドラー等、フック側では検知できない条件に対応する場合に使用します。
+戻り値の`onReady` / `onFallback` / `onPending`を呼び出すことで、任意のタイミングで状態を制御できます。イベントハンドラー等、フック側では検知できない条件に対応する場合に使用します。\
+`onReadyDelay` / `onFallbackDelay` / `onPendingDelay`で状態の変更を遅らせた場合も、どのハンドラーを呼んでも待機中の変更は取り消され、最後に呼んだハンドラーの状態になります。
 
 ```tsx
 import { useDeferUntilOnReady } from '@fringeworks/react-defer-rendering';
@@ -221,16 +224,7 @@ const { node } = useDeferUntilIntersected(<HeavyChart />, elementRef, {
 <div ref={elementRef}>{node}</div>;
 ```
 
-### `useDeferUntilScrolled`
-
-基準となる要素がスクロールによって可視範囲に入るまで描画を遅延させます。
-
-```tsx
-const { node } = useDeferUntilScrolled(<LazyImage />, elementRef, {
-  pending: <Placeholder />,
-  rootMargin: 100,
-});
-```
+判定する範囲は`rootMargin`で広げられます。数値はピクセル（上下左右に同じ値）、文字列は`IntersectionObserver`の`rootMargin`の書式（例: `'100px 0px'`、`'10%'`。単位は`px`と`%`のみ）です。要素がどの程度入ったら描画するかは`threshold`（0～1、既定値は`0.1`）で指定します。
 
 ### `useDeferUntilRender`
 
@@ -312,7 +306,7 @@ const { node } = useDeferUntilWebFontReady(<Article />, [
 
 このライブラリの各フックには、ビルド時に`'use client'`ディレクティブが付与されています。Next.jsのApp Router等のReact Server Components環境でも、追加の設定なくクライアントコンポーネントの境界として扱われます。
 
-`useDeferUntilBreakpoint` / `useDeferUntilIntersected` / `useDeferUntilScrolled` / `useDeferUntilRender` はブラウザAPI（`matchMedia`、`IntersectionObserver`、`MutationObserver`等）に依存するため、サーバー上では実際の状態を判定できません。これらのフックは`initialCondition`オプションで、SSR時に使用する初期値を指定できます（未指定の場合は`false`として扱われます）。同様に`useDeferUntilWebFontReady`は`initialState`オプションでSSR時の初期状態を指定できます。
+`useDeferUntilBreakpoint` / `useDeferUntilIntersected` / `useDeferUntilRender` はブラウザAPI（`matchMedia`、`IntersectionObserver`、`MutationObserver`等）に依存するため、サーバー上では実際の状態を判定できません。これらのフックは`initialCondition`オプションで、SSR時に使用する初期値を指定できます（未指定の場合は`false`として扱われます）。同様に`useDeferUntilWebFontReady`は`initialState`オプションでSSR時の初期状態を指定できます。
 
 ## ライセンス
 

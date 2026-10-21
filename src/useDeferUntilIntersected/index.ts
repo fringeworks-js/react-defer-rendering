@@ -1,4 +1,5 @@
-'use client';
-
 export type * from './types';
-export { default } from './useDeferUntilIntersected';
+export {
+  default,
+  default as useDeferUntilIntersected,
+} from './useDeferUntilIntersected';

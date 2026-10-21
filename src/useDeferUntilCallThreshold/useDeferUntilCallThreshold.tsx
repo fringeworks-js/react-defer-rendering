@@ -32,35 +32,35 @@ export default function useDeferUntilCallThreshold<
     onReady: handleReady,
     ...rest
   } = useDeferUntilOnReady(target, opts);
-  const pendingContRef = useRef(0);
-  const fallbackContRef = useRef(0);
-  const readyContRef = useRef(0);
+  const pendingCountRef = useRef(0);
+  const fallbackCountRef = useRef(0);
+  const readyCountRef = useRef(0);
   const reset = useCallback(() => {
-    pendingContRef.current = 0;
-    fallbackContRef.current = 0;
-    readyContRef.current = 0;
+    pendingCountRef.current = 0;
+    fallbackCountRef.current = 0;
+    readyCountRef.current = 0;
   }, []);
   const onPending = useCallback(() => {
-    pendingContRef.current += 1;
-    if (onPendingCount <= pendingContRef.current) {
+    pendingCountRef.current += 1;
+    if (onPendingCount <= pendingCountRef.current) {
       reset();
       handlePending();
     }
-  }, [handlePending, onPendingCount]);
+  }, [handlePending, onPendingCount, reset]);
   const onFallback = useCallback(() => {
-    fallbackContRef.current += 1;
-    if (onFallbackCount <= fallbackContRef.current) {
+    fallbackCountRef.current += 1;
+    if (onFallbackCount <= fallbackCountRef.current) {
       reset();
       handleFallback();
     }
-  }, [handleFallback, onFallbackCount]);
+  }, [handleFallback, onFallbackCount, reset]);
   const onReady = useCallback(() => {
-    readyContRef.current += 1;
-    if (onReadyCount <= readyContRef.current) {
+    readyCountRef.current += 1;
+    if (onReadyCount <= readyCountRef.current) {
       reset();
       handleReady();
     }
-  }, [handleReady, onReadyCount]);
+  }, [handleReady, onReadyCount, reset]);
 
   return {
     ...rest,

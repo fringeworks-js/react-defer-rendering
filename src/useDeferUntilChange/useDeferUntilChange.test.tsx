@@ -34,6 +34,11 @@ describe('useDeferUntilChange', () => {
     expect(result.current.node).toBe('target');
   });
 
+  it('NaNでもreadyへ収束する', () => {
+    const { result } = renderHook(() => useDeferUntilChange('target', NaN));
+    expect(result.current.state).toBe('ready');
+  });
+
   it('pendingノードを指定できる', () => {
     const { result } = renderHook(() =>
       useDeferUntilChange('target', 'a', { pending: 'loading' }),

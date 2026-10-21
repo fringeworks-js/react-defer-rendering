@@ -134,6 +134,18 @@ describe('useDeferUntilIntersected', () => {
     );
   });
 
+  it('数値のrootMarginはピクセルとして渡される', () => {
+    const elementRef: RefObject<HTMLElement | null> = {
+      current: document.createElement('div'),
+    };
+    renderHook(() =>
+      useDeferUntilIntersected('target', elementRef, { rootMargin: 10 }),
+    );
+    expect(MockIntersectionObserver.instances[0]!.options?.rootMargin).toBe(
+      '10px',
+    );
+  });
+
   it('アンマウント時にdisconnectが呼ばれる', () => {
     const elementRef: RefObject<HTMLElement | null> = {
       current: document.createElement('div'),

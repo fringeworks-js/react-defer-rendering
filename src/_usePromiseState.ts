@@ -1,8 +1,27 @@
 'use client';
 
-import useIsMounted from '@fringeworks/react-utils/hooks/useIsMounted';
 import { useEffect, useState } from 'react';
 import { RenderingState } from './constants';
+
+/**
+ * Promiseを生成する関数
+ */
+type CreatePromise = () => PromiseLike<unknown>;
+
+/**
+ * Promiseの結果
+ */
+type SettledResult = {
+  /**
+   * 結果を得たPromiseの生成関数
+   */
+  source: CreatePromise;
+
+  /**
+   * 描画状態（'ready', 'fallback'）
+   */
+  state: RenderingState;
+};
 
 /**
  * Promiseを生成する関数を実行し、その完了状態を返すhook
@@ -11,41 +30,38 @@ import { RenderingState } from './constants';
  * @returns 描画状態（'pending', 'ready', 'fallback'）
  */
 export default function usePromiseState(
-  createPromise: (() => PromiseLike<unknown>) | null | undefined,
+  createPromise: CreatePromise | null | undefined,
 ): RenderingState {
-  const [state, setState] = useState<RenderingState>(
-    createPromise ? RenderingState.pending : RenderingState.ready,
-  );
-  const isMounted = useIsMounted();
+  // どの生成関数に対する結果かを持ち、生成関数が変わった時点で即座にpendingとして扱う
+  const [settled, setSettled] = useState<SettledResult | null>(null);
 
   useEffect(() => {
     if (!createPromise) {
-      // 未指定になった場合は待つ対象がないため即座に描画
-      setState(RenderingState.ready);
       return;
     }
 
     // 差し替えられた後に古いPromiseの結果で状態を上書きしないようにする
     let isCurrent = true;
-    const update = (nextState: RenderingState) => {
-      if (isCurrent && isMounted()) {
-        setState(nextState);
+    const settle = (state: RenderingState) => {
+      if (isCurrent) {
+        setSettled({ source: createPromise, state });
       }
     };
-    setState(RenderingState.pending);
-    try {
-      Promise.resolve(createPromise()).then(
-        () => update(RenderingState.ready),
-        () => update(RenderingState.fallback),
-      );
-    } catch {
-      // 生成関数が同期的に例外を投げた場合も失敗として扱う
-      update(RenderingState.fallback);
-    }
+    // 生成関数が同期的に例外を投げた場合も、失敗（reject）として扱う
+    new Promise((resolve) => resolve(createPromise())).then(
+      () => settle(RenderingState.ready),
+      () => settle(RenderingState.fallback),
+    );
     return () => {
       isCurrent = false;
     };
   }, [createPromise]);
 
-  return state;
+  if (!createPromise) {
+    // 未指定の場合は待つ対象がないため即座に描画
+    return RenderingState.ready;
+  }
+  return settled?.source === createPromise
+    ? settled.state
+    : RenderingState.pending;
 }
