@@ -53,3 +53,7 @@ export type UseDeferUntilWebFontReadyOptions<
    */
   initialState?: RenderingState;
 };
+
+// Web フォントの幅の型（`WebFont` の `width`）。
+// 利用者が `@fringeworks/web-font-observer` を入れずに使えるよう、ここから export する
+export type { WebFontWidth } from '@fringeworks/web-font-observer';

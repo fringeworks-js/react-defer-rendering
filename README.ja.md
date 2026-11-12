@@ -9,8 +9,6 @@
 
 ```bash
 npm install @fringeworks/react-defer-rendering
-# または
-pnpm add @fringeworks/react-defer-rendering
 ```
 
 ## 使い方
@@ -272,7 +270,7 @@ const { node } = useDeferUntilWebFontReady(<Article />, [
 | `loader?`       | `(signal: AbortSignal) => Promise<void>` | -           | Webフォントをロードする関数。完了後に確認を開始します。待つWebフォントが変わった時のみ呼ばれます |
 | `initialState?` | `'pending' \| 'ready' \| 'fallback'`     | `'pending'` | SSR時など、読み込み状態を判定できない環境での初期状態                                            |
 
-オブジェクトで指定できる`weight` / `style` / `width` / `text`は`@fringeworks/web-font-observer`と同じです。
+オブジェクトで指定できる`weight` / `style` / `width` / `text`は`@fringeworks/web-font-observer`と同じです。`width`の型`WebFontWidth`は、`@fringeworks/web-font-observer`の同じ名前の型を、このパッケージから export したものです。
 
 - 1つでも利用可能にならなかった場合は`fallback`になり、残りの待機は中断されます。
 - 既にロード済みのWebフォントは待たずに`ready`になります（キャッシュ済みの場合にちらつきません）。

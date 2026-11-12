@@ -9,8 +9,6 @@ It provides a set of hooks covering a wide range of conditions, including timers
 
 ```bash
 npm install @fringeworks/react-defer-rendering
-# or
-pnpm add @fringeworks/react-defer-rendering
 ```
 
 ## Usage
@@ -272,7 +270,7 @@ const { node } = useDeferUntilWebFontReady(<Article />, [
 | `loader?`       | `(signal: AbortSignal) => Promise<void>` | -           | Function that loads the web fonts. Checking starts after it completes. Called only when the fonts change |
 | `initialState?` | `'pending' \| 'ready' \| 'fallback'`     | `'pending'` | Initial state in environments where the loading state cannot be determined, such as SSR                  |
 
-`weight` / `style` / `width` / `text` in the object form are the same as in `@fringeworks/web-font-observer`.
+`weight` / `style` / `width` / `text` in the object form are the same as in `@fringeworks/web-font-observer`. The type of `width`, `WebFontWidth`, is the type of the same name from `@fringeworks/web-font-observer`, exported from this package as well.
 
 - If any web font does not become available, the state becomes `fallback` and the remaining waits are aborted.
 - Web fonts that are already loaded become `ready` without waiting (no flicker for cached fonts).
